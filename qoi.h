@@ -241,6 +241,10 @@ void *qoi_decode(const void *data, int size, int *out_w, int *out_h, int channel
 #define QOI_HEADER_SIZE 12
 #define QOI_PADDING 4
 
+#define QOI_CHUNK_W 16
+#define QOI_CHUNK_H 16
+//#define QOI_CHUNKS_SEPARATE
+
 typedef union {
 	struct { unsigned char r, g, b, a; } rgba;
 	unsigned int v;
@@ -300,80 +304,120 @@ void *qoi_encode(const void *data, int w, int h, int channels, int *out_len) {
 
 	int px_len = w * h * channels;
 	int px_end = px_len - channels;
-	for (int px_pos = 0; px_pos < px_len; px_pos += channels) {
-		if (channels == 4) {
-			px = *(qoi_rgba_t *)(pixels + px_pos);
-		}
-		else {
-			px.rgba.r = pixels[px_pos];
-			px.rgba.g = pixels[px_pos+1];
-			px.rgba.b = pixels[px_pos+2];
-		}
-
-		if (px.v == px_prev.v) {
-			run++;
-		}
-
-		if (run > 0 && (run == 0x2020 || px.v != px_prev.v || px_pos == px_end)) {
-			if (run < 33) {
-				run -= 1;
-				bytes[p++] = QOI_RUN_8 | run;
+	
+	int chunks_x_count = w / QOI_CHUNK_W;
+	int chunks_y_count = h / QOI_CHUNK_H;
+	
+	for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
+		for (int chunk_x = 0; chunk_x < chunks_x_count; chunk_x++) {
+			
+			int x_pixels = QOI_CHUNK_W;
+			int y_pixels = QOI_CHUNK_H;
+			
+			if(chunk_x == chunks_x_count - 1) {
+				x_pixels = w - (chunks_x_count - 1) * QOI_CHUNK_W;
 			}
-			else {
-				run -= 33;
-				bytes[p++] = QOI_RUN_16 | run >> 8;
-				bytes[p++] = run;
+			
+			if(chunk_y == chunks_y_count - 1) {
+				y_pixels = h - (chunks_y_count - 1) * QOI_CHUNK_H;
 			}
+			
+			#ifdef QOI_CHUNKS_SEPARATE
+			memset(index, 0, sizeof(qoi_rgba_t) * 64);
 			run = 0;
-		}
-
-		if (px.v != px_prev.v) {
-			int index_pos = QOI_COLOR_HASH(px) % 64;
-
-			if (index[index_pos].v == px.v) {
-				bytes[p++] = QOI_INDEX | index_pos;
-			}
-			else {
-				index[index_pos] = px;
-
-				int vr = px.rgba.r - px_prev.rgba.r;
-				int vg = px.rgba.g - px_prev.rgba.g;
-				int vb = px.rgba.b - px_prev.rgba.b;
-				int va = px.rgba.a - px_prev.rgba.a;
-
-				if (
-					vr > -16 && vr < 17 && vg > -16 && vg < 17 && 
-					vb > -16 && vb < 17 && va > -16 && va < 17
-				) {
-					if (
-						va == 0 && vr > -2 && vr < 3 &&
-						vg > -2 && vg < 3 && vb > -2 && vb < 3
-					) {
-						bytes[p++] = QOI_DIFF_8 | ((vr + 1) << 4) | (vg + 1) << 2 | (vb + 1);
-					}
-					else if (
-						va == 0 && vr > -16 && vr < 17 && 
-						vg > -8 && vg < 9 && vb > -8 && vb < 9
-					) {
-						bytes[p++] = QOI_DIFF_16 | (vr + 15);
-						bytes[p++] = ((vg + 7) << 4) | (vb + 7);
+			px_prev = (qoi_rgba_t) {.rgba = {.r = 0, .g = 0, .b = 0, .a = 255}};
+			px = px_prev;
+			#endif
+			
+			for(int y = 0; y < y_pixels; y++) {
+				for(int x = 0; x < x_pixels; x++) {
+					
+					int px_pos = chunk_x * QOI_CHUNK_W + x;
+					px_pos += (chunk_y * QOI_CHUNK_H + y) * w;
+					px_pos *= channels;
+					
+					if (channels == 4) {
+						px = *(qoi_rgba_t *)(pixels + px_pos);
 					}
 					else {
-						bytes[p++] = QOI_DIFF_24 | ((vr + 15) >> 1);
-						bytes[p++] = ((vr + 15) << 7) | ((vg + 15) << 2) | ((vb + 15) >> 3);
-						bytes[p++] = ((vb + 15) << 5) | (va + 15);
+						px.rgba.r = pixels[px_pos];
+						px.rgba.g = pixels[px_pos+1];
+						px.rgba.b = pixels[px_pos+2];
 					}
-				}
-				else {
-					bytes[p++] = QOI_COLOR | (vr?8:0)|(vg?4:0)|(vb?2:0)|(va?1:0);
-					if (vr) { bytes[p++] = px.rgba.r; }
-					if (vg) { bytes[p++] = px.rgba.g; }
-					if (vb) { bytes[p++] = px.rgba.b; }
-					if (va) { bytes[p++] = px.rgba.a; }
+
+					if (px.v == px_prev.v) {
+						run++;
+					}
+					
+					#ifdef QOI_CHUNKS_SEPARATE
+					int chunk_end = (x + y * x_pixels) == (x_pixels * y_pixels - 1);
+					#else
+					int chunk_end = 0;
+					#endif
+
+					if (run > 0 && (run == 0x2020 || px.v != px_prev.v || px_pos == px_end || chunk_end)) {
+						if (run < 33) {
+							run -= 1;
+							bytes[p++] = QOI_RUN_8 | run;
+						}
+						else {
+							run -= 33;
+							bytes[p++] = QOI_RUN_16 | run >> 8;
+							bytes[p++] = run;
+						}
+						run = 0;
+					}
+
+					if (px.v != px_prev.v) {
+						int index_pos = QOI_COLOR_HASH(px) % 64;
+
+						if (index[index_pos].v == px.v) {
+							bytes[p++] = QOI_INDEX | index_pos;
+						}
+						else {
+							index[index_pos] = px;
+
+							int vr = px.rgba.r - px_prev.rgba.r;
+							int vg = px.rgba.g - px_prev.rgba.g;
+							int vb = px.rgba.b - px_prev.rgba.b;
+							int va = px.rgba.a - px_prev.rgba.a;
+
+							if (
+								vr > -16 && vr < 17 && vg > -16 && vg < 17 && 
+								vb > -16 && vb < 17 && va > -16 && va < 17
+							) {
+								if (
+									va == 0 && vr > -2 && vr < 3 &&
+									vg > -2 && vg < 3 && vb > -2 && vb < 3
+								) {
+									bytes[p++] = QOI_DIFF_8 | ((vr + 1) << 4) | (vg + 1) << 2 | (vb + 1);
+								}
+								else if (
+									va == 0 && vr > -16 && vr < 17 && 
+									vg > -8 && vg < 9 && vb > -8 && vb < 9
+								) {
+									bytes[p++] = QOI_DIFF_16 | (vr + 15);
+									bytes[p++] = ((vg + 7) << 4) | (vb + 7);
+								}
+								else {
+									bytes[p++] = QOI_DIFF_24 | ((vr + 15) >> 1);
+									bytes[p++] = ((vr + 15) << 7) | ((vg + 15) << 2) | ((vb + 15) >> 3);
+									bytes[p++] = ((vb + 15) << 5) | (va + 15);
+								}
+							}
+							else {
+								bytes[p++] = QOI_COLOR | (vr?8:0)|(vg?4:0)|(vb?2:0)|(va?1:0);
+								if (vr) { bytes[p++] = px.rgba.r; }
+								if (vg) { bytes[p++] = px.rgba.g; }
+								if (vb) { bytes[p++] = px.rgba.b; }
+								if (va) { bytes[p++] = px.rgba.a; }
+							}
+						}
+					}
+					px_prev = px;
 				}
 			}
 		}
-		px_prev = px;
 	}
 
 	for (int i = 0; i < QOI_PADDING; i++) {
@@ -419,59 +463,92 @@ void *qoi_decode(const void *data, int size, int *out_w, int *out_h, int channel
 
 	int run = 0;
 	int chunks_len = size - QOI_PADDING;
-	for (int px_pos = 0; px_pos < px_len; px_pos += channels) {
-		if (run > 0) {
-			run--;
-		}
-		else if (p < chunks_len) {
-			int b1 = bytes[p++];
+	
+	int chunks_x_count = w / QOI_CHUNK_W;
+	int chunks_y_count = h / QOI_CHUNK_H;
+	
+	for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
+		for (int chunk_x = 0; chunk_x < chunks_x_count; chunk_x++) {
+			
+			int x_pixels = QOI_CHUNK_W;
+			int y_pixels = QOI_CHUNK_H;
+			
+			if(chunk_x == chunks_x_count - 1) {
+				x_pixels = w - (chunks_x_count - 1) * QOI_CHUNK_W;
+			}
+			
+			if(chunk_y == chunks_y_count - 1) {
+				y_pixels = h - (chunks_y_count - 1) * QOI_CHUNK_H;
+			}
+			
+			#ifdef QOI_CHUNKS_SEPARATE
+			memset(index, 0, sizeof(qoi_rgba_t) * 64);
+			px = (qoi_rgba_t) {.rgba = {.r = 0, .g = 0, .b = 0, .a = 255}};
+			run = 0;
+			#endif
+			
+			for(int y = 0; y < y_pixels; y++) {
+				for(int x = 0; x < x_pixels; x++) {
+					
+					int px_pos = chunk_x * QOI_CHUNK_W + x;
+					px_pos += (chunk_y * QOI_CHUNK_H + y) * w;
+					px_pos *= channels;
+					
+					if (run > 0) {
+						run--;
+					}
+					else if (p < chunks_len) {
+						int b1 = bytes[p++];
 
-			if ((b1 & QOI_MASK_2) == QOI_INDEX) {
-				px = index[b1 ^ QOI_INDEX];
-			}
-			else if ((b1 & QOI_MASK_3) == QOI_RUN_8) {
-				run = (b1 & 0x1f);
-			}
-			else if ((b1 & QOI_MASK_3) == QOI_RUN_16) {
-				int b2 = bytes[p++];
-				run = (((b1 & 0x1f) << 8) | (b2)) + 32;
-			}
-			else if ((b1 & QOI_MASK_2) == QOI_DIFF_8) {
-				px.rgba.r += ((b1 >> 4) & 0x03) - 1;
-				px.rgba.g += ((b1 >> 2) & 0x03) - 1;
-				px.rgba.b += ( b1       & 0x03) - 1;
-			}
-			else if ((b1 & QOI_MASK_3) == QOI_DIFF_16) {
-				int b2 = bytes[p++];
-				px.rgba.r += (b1 & 0x1f) - 15;
-				px.rgba.g += (b2 >> 4) - 7;
-				px.rgba.b += (b2 & 0x0f) - 7;
-			}
-			else if ((b1 & QOI_MASK_4) == QOI_DIFF_24) {
-				int b2 = bytes[p++];
-				int b3 = bytes[p++];
-				px.rgba.r += (((b1 & 0x0f) << 1) | (b2 >> 7)) - 15;
-				px.rgba.g +=  ((b2 & 0x7c) >> 2) - 15;
-				px.rgba.b += (((b2 & 0x03) << 3) | ((b3 & 0xe0) >> 5)) - 15;
-				px.rgba.a +=   (b3 & 0x1f) - 15;
-			}
-			else if ((b1 & QOI_MASK_4) == QOI_COLOR) {
-				if (b1 & 8) { px.rgba.r = bytes[p++]; }
-				if (b1 & 4) { px.rgba.g = bytes[p++]; }
-				if (b1 & 2) { px.rgba.b = bytes[p++]; }
-				if (b1 & 1) { px.rgba.a = bytes[p++]; }
-			}
+						if ((b1 & QOI_MASK_2) == QOI_INDEX) {
+							px = index[b1 ^ QOI_INDEX];
+						}
+						else if ((b1 & QOI_MASK_3) == QOI_RUN_8) {
+							run = (b1 & 0x1f);
+						}
+						else if ((b1 & QOI_MASK_3) == QOI_RUN_16) {
+							int b2 = bytes[p++];
+							run = (((b1 & 0x1f) << 8) | (b2)) + 32;
+						}
+						else if ((b1 & QOI_MASK_2) == QOI_DIFF_8) {
+							px.rgba.r += ((b1 >> 4) & 0x03) - 1;
+							px.rgba.g += ((b1 >> 2) & 0x03) - 1;
+							px.rgba.b += ( b1       & 0x03) - 1;
+						}
+						else if ((b1 & QOI_MASK_3) == QOI_DIFF_16) {
+							int b2 = bytes[p++];
+							px.rgba.r += (b1 & 0x1f) - 15;
+							px.rgba.g += (b2 >> 4) - 7;
+							px.rgba.b += (b2 & 0x0f) - 7;
+						}
+						else if ((b1 & QOI_MASK_4) == QOI_DIFF_24) {
+							int b2 = bytes[p++];
+							int b3 = bytes[p++];
+							px.rgba.r += (((b1 & 0x0f) << 1) | (b2 >> 7)) - 15;
+							px.rgba.g +=  ((b2 & 0x7c) >> 2) - 15;
+							px.rgba.b += (((b2 & 0x03) << 3) | ((b3 & 0xe0) >> 5)) - 15;
+							px.rgba.a +=   (b3 & 0x1f) - 15;
+						}
+						else if ((b1 & QOI_MASK_4) == QOI_COLOR) {
+							if (b1 & 8) { px.rgba.r = bytes[p++]; }
+							if (b1 & 4) { px.rgba.g = bytes[p++]; }
+							if (b1 & 2) { px.rgba.b = bytes[p++]; }
+							if (b1 & 1) { px.rgba.a = bytes[p++]; }
+						}
 
-			index[QOI_COLOR_HASH(px) % 64] = px;
-		}
+						index[QOI_COLOR_HASH(px) % 64] = px;
+					}
 
-		if (channels == 4) { 
-			*(qoi_rgba_t*)(pixels + px_pos) = px;
-		}
-		else {
-			pixels[px_pos] = px.rgba.r;
-			pixels[px_pos+1] = px.rgba.g;
-			pixels[px_pos+2] = px.rgba.b;
+					if (channels == 4) { 
+						*(qoi_rgba_t*)(pixels + px_pos) = px;
+					}
+					else {
+						pixels[px_pos] = px.rgba.r;
+						pixels[px_pos+1] = px.rgba.g;
+						pixels[px_pos+2] = px.rgba.b;
+					}
+				}
+			}
 		}
 	}
 
