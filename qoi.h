@@ -306,13 +306,7 @@ typedef union {
 
 unsigned int qoi_color_hash(qoi_rgba_t px)
 {
-	unsigned int h = px.rgba.b | (px.rgba.g << 8) | (px.rgba.r << 16);
-	h ^= h >> 15;
-	h *= 0xdb91908du;
-	h ^= h >> 16;
-	h *= 0x6be5be6fu;
-	h ^= h >> 17;
-	return h ^ px.rgba.a;
+	return ((px.rgba.r * 37 + px.rgba.g) * 37 + px.rgba.b) * 37 + px.rgba.a;
 }
 
 void qoi_write_32(unsigned char *bytes, int *p, unsigned int v) {
