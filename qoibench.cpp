@@ -47,6 +47,7 @@ SOFTWARE.
 
 #include <filesystem>
 #include <memory>
+#include <vector>
 
 // -----------------------------------------------------------------------------
 // Cross platform high resolution timer
@@ -473,20 +474,34 @@ int main(int argc, char **argv) {
 		runs = 1;
 	}
 
-	if (!std::filesystem::exists(argv[2])) {
+	namespace fs = std::filesystem;
+
+	if (!fs::exists(argv[2])) {
 		QOI_ERROR("Couldn't open directory %s", argv[2]);
+	}
+
+	std::vector<std::string> files;
+
+	fs::path files_path = argv[2];
+	if (fs::is_directory(files_path)) {
+		for (const auto& dir_entry : fs::directory_iterator{ files_path }) {
+			if (dir_entry.is_directory() || dir_entry.path().extension() != ".png") {
+				continue;
+			}
+
+			files.push_back(dir_entry.path().string());
+		}
+	}
+	else {
+		files.push_back(files_path.string());
 	}
 
 	printf("## Benchmarking %s/*.png -- %d runs\n\n", argv[2], runs);
 
 	int count = 0;
-	for (const auto& dir_entry : std::filesystem::directory_iterator{ argv[2] }) {
-		if (dir_entry.is_directory() || dir_entry.path().extension() != ".png") {
-			continue;
-		}
+	for (const auto& file_path : files) {
 		count++;
 	
-		const auto& file_path = dir_entry.path().string();
 		benchmark_result_t res = benchmark_image(file_path.c_str(), runs);
 		benchmark_print_result(file_path.c_str(), res);
 		
