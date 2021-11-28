@@ -28,8 +28,6 @@ workspace "QOI"
 	filter { }
 		targetdir ".bin/%{cfg.longname}/"
 		defines { "WIN32", "_AMD64_" }
-		exceptionhandling "Off"
-		rtti "Off"
 		vectorextensions "AVX2"
 
 --debugdir "data"
@@ -54,7 +52,7 @@ project "qoiconv"
 project "qoibench"
 	language "C++"
 	kind "ConsoleApp"
-	files { "qoibench.c", "qoi.h" }
+	files { "qoibench.cpp", "qoi.h" }
 
 	filter { "configurations:Debug" }
 
