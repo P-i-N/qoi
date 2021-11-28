@@ -369,22 +369,23 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 	res.w = w;
 	res.h = h;
 
-
 	// Decoding
 
-	BENCHMARK_FN(runs, res.libpng.decode_time, {
-		int dec_w, dec_h;
-		void *dec_p = libpng_decode(encoded_png, encoded_png_size, &dec_w, &dec_h);
-		free(dec_p);
-	});
+	if (runs > 0) {
+		BENCHMARK_FN(runs, res.libpng.decode_time, {
+			int dec_w, dec_h;
+			void* dec_p = libpng_decode(encoded_png, encoded_png_size, &dec_w, &dec_h);
+			free(dec_p);
+			});
 
-	BENCHMARK_FN(runs, res.stbi.decode_time, {
-		int dec_w, dec_h, dec_channels;
-		void *dec_p = stbi_load_from_memory((const stbi_uc *)encoded_png, encoded_png_size, &dec_w, &dec_h, &dec_channels, 4);
-		free(dec_p);
-	});
+		BENCHMARK_FN(runs, res.stbi.decode_time, {
+			int dec_w, dec_h, dec_channels;
+			void* dec_p = stbi_load_from_memory((const stbi_uc*)encoded_png, encoded_png_size, &dec_w, &dec_h, &dec_channels, 4);
+			free(dec_p);
+			});
+	}
 
-	BENCHMARK_FN(runs, res.qoi.decode_time, {
+	BENCHMARK_FN(abs(runs), res.qoi.decode_time, {
 		qoi_desc desc;
 		void *dec_p = qoi_decode(encoded_qoi, encoded_qoi_size, &desc, 4);
 		free(dec_p);
@@ -392,21 +393,22 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 
 
 	// Encoding
+	if (runs > 0) {
+		BENCHMARK_FN(runs, res.libpng.encode_time, {
+			int enc_size;
+			void* enc_p = libpng_encode(pixels, w, h, &enc_size);
+			res.libpng.size = enc_size;
+			free(enc_p);
+			});
 
-	BENCHMARK_FN(runs, res.libpng.encode_time, {
-		int enc_size;
-		void *enc_p = libpng_encode(pixels, w, h, &enc_size);
-		res.libpng.size = enc_size;
-		free(enc_p);
-	});
+		BENCHMARK_FN(runs, res.stbi.encode_time, {
+			int enc_size = 0;
+			stbi_write_png_to_func(stbi_write_callback, &enc_size, w, h, 4, pixels, 0);
+			res.stbi.size = enc_size;
+			});
+	}
 
-	BENCHMARK_FN(runs, res.stbi.encode_time, {
-		int enc_size = 0;
-		stbi_write_png_to_func(stbi_write_callback, &enc_size, w, h, 4, pixels, 0);
-		res.stbi.size = enc_size;
-	});
-
-	BENCHMARK_FN(runs, res.qoi.encode_time, {
+	BENCHMARK_FN(abs(runs), res.qoi.encode_time, {
 		int enc_size;
 		auto desc = qoi_desc{
 			.width = (unsigned int)w,
@@ -426,26 +428,29 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 	return res;
 }
 
-void benchmark_print_result(const char *head, benchmark_result_t res) {
+void benchmark_print_result(const char *head, benchmark_result_t res, int runs) {
 	double px = (double)res.px;
 	printf("## %s size: %dx%d\n", head, res.w, res.h);
 	printf("        decode ms   encode ms   decode mpps   encode mpps   size kb\n");
-	printf(
-		"libpng:  %8.1f    %8.1f      %8.2f      %8.2f  %8d\n", 
-		(double)res.libpng.decode_time/1000000.0, 
-		(double)res.libpng.encode_time/1000000.0, 
-		(res.libpng.decode_time > 0 ? px / ((double)res.libpng.decode_time/1000.0) : 0),
-		(res.libpng.encode_time > 0 ? px / ((double)res.libpng.encode_time/1000.0) : 0),
-		(int)res.libpng.size/1024
-	);
-	printf(
-		"stbi:    %8.1f    %8.1f      %8.2f      %8.2f  %8d\n", 
-		(double)res.stbi.decode_time/1000000.0,
-		(double)res.stbi.encode_time/1000000.0,
-		(res.stbi.decode_time > 0 ? px / ((double)res.stbi.decode_time/1000.0) : 0),
-		(res.stbi.encode_time > 0 ? px / ((double)res.stbi.encode_time/1000.0) : 0),
-		(int)res.stbi.size/1024
-	);
+
+	if (runs > 0) {
+		printf(
+			"libpng:  %8.1f    %8.1f      %8.2f      %8.2f  %8d\n",
+			(double)res.libpng.decode_time / 1000000.0,
+			(double)res.libpng.encode_time / 1000000.0,
+			(res.libpng.decode_time > 0 ? px / ((double)res.libpng.decode_time / 1000.0) : 0),
+			(res.libpng.encode_time > 0 ? px / ((double)res.libpng.encode_time / 1000.0) : 0),
+			(int)res.libpng.size / 1024
+		);
+		printf(
+			"stbi:    %8.1f    %8.1f      %8.2f      %8.2f  %8d\n",
+			(double)res.stbi.decode_time / 1000000.0,
+			(double)res.stbi.encode_time / 1000000.0,
+			(res.stbi.decode_time > 0 ? px / ((double)res.stbi.decode_time / 1000.0) : 0),
+			(res.stbi.encode_time > 0 ? px / ((double)res.stbi.encode_time / 1000.0) : 0),
+			(int)res.stbi.size / 1024
+		);
+	}
 	printf(
 		"qoi:     %8.1f    %8.1f      %8.2f      %8.2f  %8d\n", 
 		(double)res.qoi.decode_time/1000000.0,
@@ -471,7 +476,7 @@ int main(int argc, char **argv) {
 
 	int runs = atoi(argv[1]);
 	if (runs <= 0) {
-		runs = 1;
+		runs = -1;
 	}
 
 	namespace fs = std::filesystem;
@@ -503,7 +508,7 @@ int main(int argc, char **argv) {
 		count++;
 	
 		benchmark_result_t res = benchmark_image(file_path.c_str(), runs);
-		benchmark_print_result(file_path.c_str(), res);
+		//benchmark_print_result(file_path.c_str(), res, runs);
 		
 		totals.px += res.px;
 		totals.libpng.encode_time += res.libpng.encode_time;
@@ -528,7 +533,7 @@ int main(int argc, char **argv) {
 	totals.qoi.decode_time /= count;
 	totals.qoi.size /= count;
 
-	benchmark_print_result("Totals (AVG)", totals);
+	benchmark_print_result("Totals (AVG)", totals, runs);
 
 	return 0;
 }
