@@ -297,6 +297,7 @@ void *qoi_decode(const void *data, int size, qoi_desc *desc, int channels);
 #define QOI_CHUNK_H 16
 //#define QOI_CHUNKS_SEPARATE
 #define QOI_REORDER_PIXELS
+//#define QOI_ZIGZAG_Y
 
 typedef union {
 	struct { unsigned char r, g, b, a; } rgba;
@@ -370,9 +371,14 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 	int chunks_x_count = desc->width / QOI_CHUNK_W;
 	int chunks_y_count = desc->height / QOI_CHUNK_H;
 	
+#ifdef QOI_ZIGZAG_Y
 	for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
 		for (int chunk_x = 0; chunk_x < chunks_x_count; chunk_x++) {
-			
+#else
+	for (int chunk_x = 0; chunk_x < chunks_x_count; chunk_x++) {
+		for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
+#endif
+
 			int x_pixels = QOI_CHUNK_W;
 			int y_pixels = QOI_CHUNK_H;
 			
@@ -391,20 +397,28 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 			px = px_prev;
 			mode = 0;
 			#endif
-			
-			for(int y = 0; y < y_pixels; y++) {
-				for(int x = 0; x < x_pixels; x++) {
-					
-					int px_pos = chunk_x * QOI_CHUNK_W;
-					#ifdef QOI_REORDER_PIXELS
-					px_pos += (y&1) ? (x_pixels - x - 1) : x;
-					#else
+
+#if defined(QOI_REORDER_PIXELS) && defined(QOI_ZIGZAG_Y)
+			for(int x = 0; x < x_pixels; x++) {
+				for (int y = 0; y < y_pixels; y++) {
+
+					int px_pos = (chunk_y * QOI_CHUNK_H * desc->width) + chunk_x * QOI_CHUNK_W + x;
+					px_pos += ((x & 1) ? (y_pixels - y - 1) : y) * desc->width;
+#else
+			for (int y = 0; y < y_pixels; y++) {
+				for (int x = 0; x < x_pixels; x++) {
+
+					int px_pos = ((chunk_y * QOI_CHUNK_H + y) * desc->width) + chunk_x * QOI_CHUNK_W;
+
+#ifdef QOI_REORDER_PIXELS
+					px_pos += (y & 1) ? (x_pixels - x - 1) : x;
+#else
 					px_pos += x;
-					#endif
-					
-					px_pos += (chunk_y * QOI_CHUNK_H + y) * desc->width;
+#endif
+#endif
+
 					px_pos *= desc->channels;
-					
+
 					if (desc->channels == 4) {
 						px = *(qoi_rgba_t *)(pixels + px_pos);
 					}
