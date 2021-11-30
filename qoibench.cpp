@@ -384,13 +384,13 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 			void* dec_p = stbi_load_from_memory((const stbi_uc*)encoded_png, encoded_png_size, &dec_w, &dec_h, &dec_channels, 4);
 			free(dec_p);
 			});
-
-		BENCHMARK_FN(abs(runs), res.qoi.decode_time, {
-			qoi_desc desc;
-			void* dec_p = qoi_decode(encoded_qoi, encoded_qoi_size, &desc, 4);
-			free(dec_p);
-			});
 	}
+
+	BENCHMARK_FN(abs(runs), res.qoi.decode_time, {
+		qoi_desc desc;
+		void* dec_p = qoi_decode(encoded_qoi, encoded_qoi_size, &desc, 4);
+		free(dec_p);
+		});
 
 	// Encoding
 	if (runs > 0) {
@@ -517,10 +517,6 @@ int main(int argc, char **argv) {
 	int total_size = 0;
 
 	int runs = atoi(argv[1]);
-	if (runs <= 0) {
-		runs = -1;
-	}
-
 	namespace fs = std::filesystem;
 
 	if (!fs::exists(argv[2])) {
@@ -607,7 +603,7 @@ int main(int argc, char **argv) {
 		suite.totals.qoi.size /= count;
 
 		if (runs > 0) {
-			benchmark_print_result("", suite.totals, runs);
+			benchmark_print_result("Total AVG", suite.totals, runs);
 		}
 		else {
 			benchmark_print_separator();
@@ -627,6 +623,10 @@ int main(int argc, char **argv) {
 
 			benchmark_print_simple_result(suite.name.c_str(), suite.totals);
 		}
+	}
+	else {
+		if (runs <= 0)
+			benchmark_print_result("Total AVG", dir_suites[0].totals, 1);
 	}
 
 	return 0;
