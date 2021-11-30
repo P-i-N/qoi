@@ -416,10 +416,10 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 			.channels = 4,
 			.colorspace = QOI_SRGB
 		};
-		void *enc_p = qoi_encode(pixels, &desc, &enc_size, NULL);
+		void* enc_p = qoi_encode(pixels, &desc, &enc_size, NULL);
 		res.qoi.size = enc_size;
 		free(enc_p);
-	});
+		});
 
 	free(pixels);
 	free(encoded_png);
