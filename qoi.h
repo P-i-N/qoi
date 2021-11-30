@@ -207,6 +207,16 @@ typedef struct {
 	unsigned char colorspace;
 } qoi_desc;
 
+typedef struct {
+	unsigned int count_hash_bucket[128];
+	unsigned int count_index;
+	unsigned int count_diff_8;
+	unsigned int count_diff_16;
+	unsigned int count_run_8;
+	unsigned int count_diff_24;
+	unsigned int count_color;
+} stats_t;
+
 #ifndef QOI_NO_STDIO
 
 // Encode raw RGB or RGBA pixels into a QOI image and write it to the file 
@@ -242,7 +252,7 @@ void *qoi_read(const char *filename, qoi_desc *desc, int channels);
 
 // The returned qoi data should be free()d after user.
 
-void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len);
+void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len, stats_t *stats);
 
 
 // Decode a QOI image from memory.
@@ -275,10 +285,17 @@ void *qoi_decode(const void *data, int size, qoi_desc *desc, int channels);
 
 #define QOI_INDEX   0x00 // 00xxxxxx
 #define QOI_DIFF_8  0x40 // 01xxxxxx
-#define QOI_DIFF_16 0x80 // 10xxxxxx
+#define QOI_DIFF_16 0x80 // 100xxxxx
 #define QOI_RUN_8   0xc0 // 110xxxxx
 #define QOI_DIFF_24 0xe0 // 1110xxxx
 #define QOI_COLOR   0xf0 // 1111xxxx
+
+#define _QOI_INDEX   0x00 // 0xxxxxxx
+#define _QOI_DIFF_8  0x40 // 10RRGGBB
+#define _QOI_RUN_8   0xc0 // 110xxxxx
+#define _QOI_DIFF_16 0x80 // 1110RRRR GGGGBBBB
+#define _QOI_DIFF_24 0xe0 // 11110RRR RRRGGGGG GBBBBBB
+#define _QOI_COLOR   0xf0 // 11111xxx RRRRRRRR GGGGGGG BBBBBBBB AAAAAAAA
 
 #define QOI_MASK_2  0xc0 // 11000000
 #define QOI_MASK_3  0xe0 // 11100000
@@ -324,7 +341,14 @@ unsigned int qoi_read_32(const unsigned char *bytes, int *p) {
 	return (a << 24) | (b << 16) | (c << 8) | d;
 }
 
-void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
+void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len, stats_t *stats) {
+	stats_t empty_stats;
+
+	if (stats == NULL)
+		stats = &empty_stats;
+
+	memset(stats, 0, sizeof(stats_t));
+
 	if (
 		data == NULL || out_len == NULL || desc == NULL ||
 		desc->width == 0 || desc->height == 0 ||
@@ -353,7 +377,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 
 	const unsigned char *pixels = (const unsigned char *)data;
 
-	qoi_rgba_t index[64] = {0};
+	qoi_rgba_t index[128] = {0};
 
 	int run = 0;
 	int mode = 0;
@@ -424,6 +448,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 
 					if (px.v == px_prev.v) {
 						run++;
+						stats->count_run_8++;
 					}
 					else {
 						if (mode == 0 && px.rgba.a > 0 && px.rgba.a < 255)
@@ -441,32 +466,25 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 					#endif
 
 					if (run > 0 && (px.v != px_prev.v || px_pos == px_end || chunk_end)) {
-						int len;
 						int start = p;
 						--run;
+
 						do
 						{
 							bytes[p++] = QOI_RUN_8 | (run & 0x1f);
 							run >>= 5;
 						} while (run > 0);
 
-						// swap to make big endian
-						len = (p - start) >> 1;
-						for (int i=0; i<len; i++)
-						{
-							unsigned char tmp = bytes[start + i];
-							bytes[start + i] = bytes[p - 1 - i];
-							bytes[p - 1 - i] = tmp;
-						}
-
 						run = 0;
 					}
 
 					if (px.v != px_prev.v) {
-						int index_pos = QOI_COLOR_HASH(px) % 64;
+						int index_pos = QOI_COLOR_HASH(px) % 128;
+						stats->count_hash_bucket[index_pos]++;
 
 						if (index[index_pos].v == px.v) {
 							bytes[p++] = QOI_INDEX | index_pos;
+							stats->count_index++;
 						}
 						else {
 							index[index_pos] = px;
@@ -488,6 +506,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 										QOI_RANGE(vg, 2) && QOI_RANGE(vb, 2)
 									) {
 										bytes[p++] = QOI_DIFF_8 | ((vr + 2) << 4) | (vg + 2) << 2 | (vb + 2);
+										stats->count_diff_8++;
 									}
 									else if (
 										QOI_RANGE(vr, 16) &&
@@ -498,6 +517,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 											((vg + 16) << 4) | (vb + 8);
 										bytes[p++] = (unsigned char)(value >> 8);
 										bytes[p++] = (unsigned char)(value);
+										stats->count_diff_16++;
 									}
 									else {
 										// better to encode color?
@@ -511,6 +531,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 										bytes[p++] = (unsigned char)(value >> 16);
 										bytes[p++] = (unsigned char)(value >> 8);
 										bytes[p++] = (unsigned char)(value);
+										stats->count_diff_24++;
 									}
 								}
 								else {
@@ -529,6 +550,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 										QOI_RANGE(vg, 2) && QOI_RANGE(vb, 2)
 									) {
 										bytes[p++] = QOI_DIFF_8 | ((vr + 2) << 4) | (vg + 2) << 2 | (vb + 2);
+										stats->count_diff_8++;
 									}
 									else if (
 										QOI_RANGE(va, 2) && QOI_RANGE(vr, 8) &&
@@ -540,6 +562,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 
 										bytes[p++] = (unsigned char)(value >> 8);
 										bytes[p++] = (unsigned char)(value);
+										stats->count_diff_16++;
 									}
 									else {
 										// better to encode color?
@@ -553,6 +576,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 										bytes[p++] = (unsigned char)(value >> 16);
 										bytes[p++] = (unsigned char)(value >> 8);
 										bytes[p++] = (unsigned char)(value);
+										stats->count_diff_24++;
 									}
 								}
 								else {
@@ -562,6 +586,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len) {
 									if (vg) { bytes[p++] = px.rgba.g; }
 									if (vb) { bytes[p++] = px.rgba.b; }
 									if (va) { bytes[p++] = px.rgba.a; }
+									stats->count_color++;
 								}
 							}
 						}
@@ -754,7 +779,7 @@ void *qoi_decode(const void *data, int size, qoi_desc *desc, int channels) {
 
 int qoi_write(const char *filename, const void *data, const qoi_desc *desc) {
 	int size;
-	void *encoded = qoi_encode(data, desc, &size);
+	void *encoded = qoi_encode(data, desc, &size, NULL);
 	if (!encoded) {
 		return 0;
 	}

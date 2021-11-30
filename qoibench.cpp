@@ -315,6 +315,7 @@ typedef struct {
 } benchmark_lib_result_t;
 
 typedef struct {
+	stats_t stats;
 	uint64_t px;
 	int w;
 	int h;
@@ -358,16 +359,16 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 		.colorspace = QOI_SRGB
 	};
 
-	void *encoded_qoi = qoi_encode(pixels, &desc, &encoded_qoi_size);
+	benchmark_result_t res = { 0 };
+	res.px = w * h;
+	res.w = w;
+	res.h = h;
+
+	void *encoded_qoi = qoi_encode(pixels, &desc, &encoded_qoi_size, &res.stats);
 
 	if (!pixels || !encoded_qoi || !encoded_png) {
 		QOI_ERROR("Error decoding %s\n", path);
 	}
-
-	benchmark_result_t res = {0};
-	res.px = w * h;
-	res.w = w;
-	res.h = h;
 
 	// Decoding
 
@@ -383,14 +384,13 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 			void* dec_p = stbi_load_from_memory((const stbi_uc*)encoded_png, encoded_png_size, &dec_w, &dec_h, &dec_channels, 4);
 			free(dec_p);
 			});
+
+		BENCHMARK_FN(abs(runs), res.qoi.decode_time, {
+			qoi_desc desc;
+			void* dec_p = qoi_decode(encoded_qoi, encoded_qoi_size, &desc, 4);
+			free(dec_p);
+			});
 	}
-
-	BENCHMARK_FN(abs(runs), res.qoi.decode_time, {
-		qoi_desc desc;
-		void *dec_p = qoi_decode(encoded_qoi, encoded_qoi_size, &desc, 4);
-		free(dec_p);
-	});
-
 
 	// Encoding
 	if (runs > 0) {
@@ -416,7 +416,7 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 			.channels = 4,
 			.colorspace = QOI_SRGB
 		};
-		void *enc_p = qoi_encode(pixels, &desc, &enc_size);
+		void *enc_p = qoi_encode(pixels, &desc, &enc_size, NULL);
 		res.qoi.size = enc_size;
 		free(enc_p);
 	});
@@ -431,6 +431,21 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 void benchmark_print_result(const char *head, benchmark_result_t res, int runs) {
 	double px = (double)res.px;
 	printf("## %s size: %dx%d\n", head, res.w, res.h);
+	printf(
+		"-------------------------------------------------------------------\n");
+
+	printf(
+		"            index    diff_8    diff_16    run_8    diff_24    color\n");
+	printf(
+		"counts:  %8d  %8d   %8d %8d   %8d %8d\n\n",
+		(int)res.stats.count_index,
+		(int)res.stats.count_diff_8,
+		(int)res.stats.count_diff_16,
+		(int)res.stats.count_run_8,
+		(int)res.stats.count_diff_24,
+		(int)res.stats.count_color
+	);
+
 	printf("        decode ms   encode ms   decode mpps   encode mpps   size kb\n");
 
 	if (runs > 0) {
