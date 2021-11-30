@@ -53,6 +53,7 @@ project "qoibench"
 	language "C++"
 	kind "ConsoleApp"
 	files { "qoibench.cpp", "qoi.h" }
+	links { "libpng16", "zlib" }
 
 	filter { "configurations:Debug" }
 

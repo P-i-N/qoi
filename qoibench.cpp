@@ -428,23 +428,52 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 	return res;
 }
 
-void benchmark_print_result(const char *head, benchmark_result_t res, int runs) {
-	double px = (double)res.px;
-	printf("## %s size: %dx%d\n", head, res.w, res.h);
-	printf(
-		"-------------------------------------------------------------------\n");
+void benchmark_print_header(const char *head) {
+	char buff[256] = { };
+	sprintf(buff, "%s", head);
+
+	if (strlen(buff) >= 39)
+		buff[39] = 0;
+
+	printf("%s", buff);
+	for (int i = 0, S = 39 - (int)strlen(buff); i < S; ++i) printf(" ");
 
 	printf(
-		"            index    diff_8    diff_16    run_8    diff_24    color\n");
+		"|   index    diff_8    diff_16    run_8    diff_24    color  | size kB\n");
+}
+
+void benchmark_print_separator() {
 	printf(
-		"counts:  %8d  %8d   %8d %8d   %8d %8d\n\n",
+		"---------------------------------------+------------------------------------------------------------+--------\n");
+}
+
+void benchmark_print_simple_result(const char* head, benchmark_result_t res) {
+	char buff[256] = { };
+	sprintf(buff, "%s", head);
+	
+	if (strlen(buff) >= 39)
+		buff[39] = 0;
+
+	printf("%s", buff);
+	for (int i = 0, S = 39 - (int)strlen(buff); i < S; ++i) printf(" ");
+
+	printf(
+		"|%8d  %8d   %8d %8d   %8d %8d  |%8d\n",
 		(int)res.stats.count_index,
 		(int)res.stats.count_diff_8,
 		(int)res.stats.count_diff_16,
 		(int)res.stats.count_run_8,
 		(int)res.stats.count_diff_24,
-		(int)res.stats.count_color
+		(int)res.stats.count_color,
+		(int)res.qoi.size / 1024
 	);
+}
+
+void benchmark_print_result(const char *head, benchmark_result_t res, int runs) {
+	double px = (double)res.px;
+	printf("## %s size: %dx%d\n", head, res.w, res.h);
+	printf(
+		"-------------------------------------------------------------------\n");
 
 	printf("        decode ms   encode ms   decode mpps   encode mpps   size kb\n");
 
@@ -487,8 +516,6 @@ int main(int argc, char **argv) {
 	float total_percentage = 0;
 	int total_size = 0;
 
-	benchmark_result_t totals = {0};
-
 	int runs = atoi(argv[1]);
 	if (runs <= 0) {
 		runs = -1;
@@ -500,55 +527,107 @@ int main(int argc, char **argv) {
 		QOI_ERROR("Couldn't open directory %s", argv[2]);
 	}
 
-	std::vector<std::string> files;
+	struct dir_suite {
+		std::string name;
+		std::vector<std::string> files;
+		benchmark_result_t totals = { 0 };
+
+		void get_files(const fs::path& p) {
+			name = p.filename().string();
+
+			for (const auto& dir_entry : fs::directory_iterator{ p }) {
+				if (dir_entry.is_directory() || dir_entry.path().extension() != ".png") {
+					continue;
+				}
+
+				files.push_back(dir_entry.path().string());
+			}
+		}
+	};
+	
+	std::vector<dir_suite> dir_suites;
+	dir_suites.emplace_back();
 
 	fs::path files_path = argv[2];
 	if (fs::is_directory(files_path)) {
 		for (const auto& dir_entry : fs::directory_iterator{ files_path }) {
-			if (dir_entry.is_directory() || dir_entry.path().extension() != ".png") {
-				continue;
+			if (dir_entry.is_directory()) {
+				auto& suite = dir_suites.emplace_back();
+				suite.get_files(dir_entry.path());
 			}
-
-			files.push_back(dir_entry.path().string());
+			else if (dir_entry.path().extension() == ".png") {
+				dir_suites[0].files.push_back(dir_entry.path().string());
+			}
 		}
 	}
 	else {
-		files.push_back(files_path.string());
+		dir_suites[0].files.push_back(files_path.string());
 	}
 
-	printf("## Benchmarking %s/*.png -- %d runs\n\n", argv[2], runs);
+	for (auto& suite : dir_suites) {
+		if (suite.files.empty())
+			continue;
 
-	int count = 0;
-	for (const auto& file_path : files) {
-		count++;
-	
-		benchmark_result_t res = benchmark_image(file_path.c_str(), runs);
-		//benchmark_print_result(file_path.c_str(), res, runs);
-		
-		totals.px += res.px;
-		totals.libpng.encode_time += res.libpng.encode_time;
-		totals.libpng.decode_time += res.libpng.decode_time;
-		totals.libpng.size += res.libpng.size;
-		totals.stbi.encode_time += res.stbi.encode_time;
-		totals.stbi.decode_time += res.stbi.decode_time;
-		totals.stbi.size += res.stbi.size;
-		totals.qoi.encode_time += res.qoi.encode_time;
-		totals.qoi.decode_time += res.qoi.decode_time;
-		totals.qoi.size += res.qoi.size;
+		if (runs < 0) {
+			benchmark_print_header(suite.name.c_str());
+			benchmark_print_separator();
+		}
+
+		for (const auto& file_path : suite.files) {
+
+			benchmark_result_t res = benchmark_image(file_path.c_str(), runs);
+			
+			if (runs > 0)
+				benchmark_print_result(file_path.c_str(), res, runs);
+			else
+				benchmark_print_simple_result(fs::path(file_path).filename().string().c_str(), res);
+
+			suite.totals.px += res.px;
+			suite.totals.libpng.encode_time += res.libpng.encode_time;
+			suite.totals.libpng.decode_time += res.libpng.decode_time;
+			suite.totals.libpng.size += res.libpng.size;
+			suite.totals.stbi.encode_time += res.stbi.encode_time;
+			suite.totals.stbi.decode_time += res.stbi.decode_time;
+			suite.totals.stbi.size += res.stbi.size;
+			suite.totals.qoi.encode_time += res.qoi.encode_time;
+			suite.totals.qoi.decode_time += res.qoi.decode_time;
+			suite.totals.qoi.size += res.qoi.size;
+		}
+
+		int count = int(suite.files.size());
+		suite.totals.px /= count;
+		suite.totals.libpng.encode_time /= count;
+		suite.totals.libpng.decode_time /= count;
+		suite.totals.libpng.size /= count;
+		suite.totals.stbi.encode_time /= count;
+		suite.totals.stbi.decode_time /= count;
+		suite.totals.stbi.size /= count;
+		suite.totals.qoi.encode_time /= count;
+		suite.totals.qoi.decode_time /= count;
+		suite.totals.qoi.size /= count;
+
+		if (runs > 0) {
+			benchmark_print_result("", suite.totals, runs);
+		}
+		else {
+			benchmark_print_separator();
+			benchmark_print_simple_result(suite.name.c_str(), suite.totals);
+		}
+
+		printf("\n");
 	}
 
-	totals.px /= count;
-	totals.libpng.encode_time /= count;
-	totals.libpng.decode_time /= count;
-	totals.libpng.size /= count;
-	totals.stbi.encode_time /= count;
-	totals.stbi.decode_time /= count;
-	totals.stbi.size /= count;
-	totals.qoi.encode_time /= count;
-	totals.qoi.decode_time /= count;
-	totals.qoi.size /= count;
+	if (dir_suites.size() > 1) {
+		benchmark_print_header("");
+		benchmark_print_separator();
 
-	benchmark_print_result("Totals (AVG)", totals, runs);
+		for (const auto& suite : dir_suites) {
+			if (suite.files.empty())
+				continue;
+
+			benchmark_print_simple_result(suite.name.c_str(), suite.totals);
+		}
+	}
 
 	return 0;
 }
