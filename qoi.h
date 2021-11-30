@@ -310,6 +310,7 @@ void *qoi_decode(const void *data, int size, qoi_desc *desc, int channels);
 
 #define QOI_CHUNK_W 16
 #define QOI_CHUNK_H 16
+//#define QOI_SEPARATE_COLUMNS
 //#define QOI_STATS(N) stats->N++
 
 #ifndef QOI_STATS
@@ -392,20 +393,33 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len, stats_t *
 	int channels = desc->channels;
 
 	for (int chunk_x = 0; chunk_x < chunks_x_count; chunk_x++) {
-		for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
+		int x_pixels = QOI_CHUNK_W;
+		if (chunk_x == chunks_x_count - 1) {
+			x_pixels = desc->width - (chunks_x_count - 1) * QOI_CHUNK_W;
+		}
 
-			int x_pixels = QOI_CHUNK_W;
+#ifdef QOI_SEPARATE_COLUMNS
+		memset(index, 0, sizeof(qoi_rgba_t) * QOI_COLOR_CACHE_SIZE);
+		run = 0;
+		px_prev.rgba.r = 0;
+		px_prev.rgba.g = 0;
+		px_prev.rgba.b = 0;
+		px_prev.rgba.a = 255;
+		px = px_prev;
+		mode = 0;
+#endif
+
+		for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
 			int y_pixels = QOI_CHUNK_H;
-			
-			if(chunk_x == chunks_x_count - 1) {
-				x_pixels = desc->width - (chunks_x_count - 1) * QOI_CHUNK_W;
-			}
-			
 			if(chunk_y == chunks_y_count - 1) {
 				y_pixels = desc->height - (chunks_y_count - 1) * QOI_CHUNK_H;
 			}
 
 			int px_chunk_pos = ((chunk_y * QOI_CHUNK_H) * desc->width) + chunk_x * QOI_CHUNK_W;
+			
+#ifdef QOI_SEPARATE_COLUMNS
+			px_end = (px_chunk_pos + ((y_pixels - 1) * desc->width + x_pixels - 1)) * channels;
+#endif
 
 			for (int y = 0; y < y_pixels; y++, px_chunk_pos += desc->width) {
 				memcpy(chunkLine, pixels + px_chunk_pos * channels, x_pixels * channels);
@@ -646,15 +660,25 @@ void *qoi_decode(const void *data, int size, qoi_desc *desc, int channels) {
 	int chunks_y_count = desc->height / QOI_CHUNK_H;
 
 	for (int chunk_x = 0; chunk_x < chunks_x_count; chunk_x++) {
+		int x_pixels = QOI_CHUNK_W;
+		if (chunk_x == chunks_x_count - 1) {
+			x_pixels = desc->width - (chunks_x_count - 1) * QOI_CHUNK_W;
+		}
+
+#ifdef QOI_SEPARATE_COLUMNS
+		memset(index, 0, sizeof(qoi_rgba_t) * QOI_COLOR_CACHE_SIZE);
+		run = 0;
+		px.rgba.r = 0;
+		px.rgba.g = 0;
+		px.rgba.b = 0;
+		px.rgba.a = 255;
+		pxRGB = px;
+		pxRGB.rgba.a = 0;
+		mode = 0;
+#endif
+
 		for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
-
-			int x_pixels = QOI_CHUNK_W;
 			int y_pixels = QOI_CHUNK_H;
-
-			if (chunk_x == chunks_x_count - 1) {
-				x_pixels = desc->width - (chunks_x_count - 1) * QOI_CHUNK_W;
-			}
-
 			if (chunk_y == chunks_y_count - 1) {
 				y_pixels = desc->height - (chunks_y_count - 1) * QOI_CHUNK_H;
 			}
