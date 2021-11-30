@@ -310,7 +310,7 @@ void *qoi_decode(const void *data, int size, qoi_desc *desc, int channels);
 
 #define QOI_CHUNK_W 16
 #define QOI_CHUNK_H 16
-//#define QOI_SEPARATE_COLUMNS
+#define QOI_SEPARATE_COLUMNS
 //#define QOI_STATS(N) stats->N++
 
 #ifndef QOI_STATS
@@ -386,8 +386,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len, stats_t *
 	qoi_rgba_t px_prev = {.rgba = {.r = 0, .g = 0, .b = 0, .a = 255}};
 	qoi_rgba_t px = px_prev;
 	
-	int px_len = desc->width * desc->height * desc->channels;
-	int px_end = px_len - desc->channels;
+	int px_count = desc->width * desc->height;
 	int chunks_x_count = desc->width / QOI_CHUNK_W;
 	int chunks_y_count = desc->height / QOI_CHUNK_H;
 	int channels = desc->channels;
@@ -407,6 +406,8 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len, stats_t *
 		px_prev.rgba.a = 255;
 		px = px_prev;
 		mode = 0;
+
+		px_count = x_pixels * desc->height;
 #endif
 
 		for (int chunk_y = 0; chunk_y < chunks_y_count; chunk_y++) {
@@ -416,14 +417,10 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len, stats_t *
 			}
 
 			int px_chunk_pos = ((chunk_y * QOI_CHUNK_H) * desc->width) + chunk_x * QOI_CHUNK_W;
-			
-#ifdef QOI_SEPARATE_COLUMNS
-			px_end = (px_chunk_pos + ((y_pixels - 1) * desc->width + x_pixels - 1)) * channels;
-#endif
 
 			for (int y = 0; y < y_pixels; y++, px_chunk_pos += desc->width) {
 				memcpy(chunkLine, pixels + px_chunk_pos * channels, x_pixels * channels);
-				for (int x = 0; x < x_pixels; x++) {
+				for (int x = 0; x < x_pixels; x++, px_count--) {
 					memcpy(&px_prev, &px, 4);
 
 					int x_pos = ((y & 1) ? (x_pixels - x - 1) : x) * channels;
@@ -451,7 +448,7 @@ void *qoi_encode(const void *data, const qoi_desc *desc, int *out_len, stats_t *
 
 					if (!diffFromPrev) {
 						run++;
-						flushRun = (px_chunk_pos * channels + x_pos == px_end);
+						flushRun = (px_count == 1);
 						QOI_STATS(count_run_8);
 
 						if (!flushRun) {
