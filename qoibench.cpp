@@ -324,6 +324,12 @@ typedef struct {
 	benchmark_lib_result_t qoi;
 } benchmark_result_t;
 
+struct benchmark_conf {
+	bool encode = true;
+	bool decode = true;
+	bool alphaToBW = false;
+	bool saveQOI = false;
+};
 
 // Run __VA_ARGS__ a number of times and meassure the time taken. The first
 // run is ignored.
@@ -341,8 +347,7 @@ typedef struct {
 		AVG_TIME = time / RUNS; \
 	} while (0)
 
-
-benchmark_result_t benchmark_image(const char *path, int runs) {
+benchmark_result_t benchmark_image(const char* path, int runs, benchmark_conf conf = { }) {
 	int encoded_png_size;
 	int encoded_qoi_size;
 	int w;
@@ -352,11 +357,23 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 	void *pixels = (void *)stbi_load(path, &w, &h, NULL, 4);
 	void *encoded_png = fload(path, &encoded_png_size);
 
+	if (conf.alphaToBW)
+	{
+		unsigned char* px_ptr = (unsigned char*)pixels;
+		for (int i = 0, S = w * h; i < S; ++i, px_ptr += 4) {
+			px_ptr[0] = px_ptr[3];
+			px_ptr[1] = px_ptr[3];
+			px_ptr[2] = px_ptr[3];
+			px_ptr[3] = 255;
+		}
+	}
+
 	auto desc = qoi_desc{
 		.width = (unsigned int)w,
 		.height = (unsigned int)h,
 		.channels = 4,
-		.colorspace = QOI_SRGB
+		.colorspace = QOI_SRGB,
+		.mode = 1
 	};
 
 	benchmark_result_t res = { 0 };
@@ -370,8 +387,16 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 		QOI_ERROR("Error decoding %s\n", path);
 	}
 
-	// Decoding
+	if (conf.saveQOI) {
+		std::string fileName = path;
+		fileName += "_encoded.qoi";
 
+		FILE* f = fopen(fileName.c_str(), "wb");
+		fwrite(encoded_qoi, 1, encoded_qoi_size, f);
+		fclose(f);
+	}
+
+	// Decoding
 	if (runs > 0) {
 		BENCHMARK_FN(runs, res.libpng.decode_time, {
 			int dec_w, dec_h;
@@ -386,11 +411,13 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 			});
 	}
 
-	BENCHMARK_FN(abs(runs), res.qoi.decode_time, {
-		qoi_desc desc;
-		void* dec_p = qoi_decode(encoded_qoi, encoded_qoi_size, &desc, 4);
-		free(dec_p);
-		});
+	if (conf.decode) {
+		BENCHMARK_FN(abs(runs), res.qoi.decode_time, {
+			qoi_desc desc;
+			void* dec_p = qoi_decode(encoded_qoi, encoded_qoi_size, &desc, 4);
+			free(dec_p);
+			});
+	}
 
 	// Encoding
 	if (runs > 0) {
@@ -408,18 +435,21 @@ benchmark_result_t benchmark_image(const char *path, int runs) {
 			});
 	}
 
-	BENCHMARK_FN(abs(runs), res.qoi.encode_time, {
-		int enc_size;
-		auto desc = qoi_desc{
-			.width = (unsigned int)w,
-			.height = (unsigned int)h,
-			.channels = 4,
-			.colorspace = QOI_SRGB
-		};
-		void* enc_p = qoi_encode(pixels, &desc, &enc_size, NULL);
-		res.qoi.size = enc_size;
-		free(enc_p);
-		});
+	if (conf.encode) {
+		BENCHMARK_FN(abs(runs), res.qoi.encode_time, {
+			int enc_size;
+			auto desc = qoi_desc{
+				.width = (unsigned int)w,
+				.height = (unsigned int)h,
+				.channels = 4,
+				.colorspace = QOI_SRGB,
+				.mode = 1
+			};
+			void* enc_p = qoi_encode(pixels, &desc, &enc_size, NULL);
+			res.qoi.size = enc_size;
+			free(enc_p);
+			});
+	}
 
 	free(pixels);
 	free(encoded_png);
@@ -560,6 +590,12 @@ int main(int argc, char **argv) {
 		dir_suites[0].files.push_back(files_path.string());
 	}
 
+	benchmark_conf conf;
+	conf.encode = true;
+	conf.decode = false;
+	conf.alphaToBW = true;
+	conf.saveQOI = true;
+
 	for (auto& suite : dir_suites) {
 		if (suite.files.empty())
 			continue;
@@ -571,7 +607,7 @@ int main(int argc, char **argv) {
 
 		for (const auto& file_path : suite.files) {
 
-			benchmark_result_t res = benchmark_image(file_path.c_str(), runs);
+			benchmark_result_t res = benchmark_image(file_path.c_str(), runs, conf);
 			
 			if (runs > 0)
 				benchmark_print_result(file_path.c_str(), res, runs);

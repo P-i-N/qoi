@@ -71,6 +71,16 @@ int main(int argc, char **argv) {
 		h = desc.height;
 	}
 
+	if (channels == 4) {
+		unsigned char* px_ptr = (unsigned char*)pixels;
+		for (int i = 0, S = w * h; i < S; ++i, px_ptr += 4) {
+			px_ptr[0] = px_ptr[3];
+			px_ptr[1] = px_ptr[3];
+			px_ptr[2] = px_ptr[3];
+			px_ptr[3] = 255;
+		}
+	}
+
 	if (pixels == NULL) {
 		printf("Couldn't load/decode %s\n", argv[1]);
 		exit(1);
