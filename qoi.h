@@ -203,6 +203,7 @@ extern "C" {
 #define QOI_LINEAR 0x0f
 
 #define QOI_COLOR_CACHE_SIZE 128
+#define QOI_LRU_CACHE_SIZE 6
 
 typedef struct
 {
@@ -296,9 +297,8 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels );
 #define QOI_DIFF_16  0b11100000 // 1110RRRR GGGGBBBB or 1110xxxx
 #define QOI_DIFF_24  0b11110000 // 11110RRR RRRRGGGG GGBBBBBB
 #define QOI_COLOR    0b11111000 // 11111xxx RRRRRRRR GGGGGGGG BBBBBBBB
-#define QOI_COLOR_BW 0b11111001 // 11111001 LLLLLLLL
-#define QOI_MODE_COL 0b11111100 // Switch to color mode
-#define QOI_MODE_BW  0b11111101 // Switch to BW mode
+#define QOI_COLOR_BW 0b11111111 // 11111001 LLLLLLLL
+#define QOI_LRU      0b11111000 // 11111xxx
 
 #define QOI_MASK_1  0b10000000
 #define QOI_MASK_2  0b11000000
@@ -349,6 +349,18 @@ unsigned int qoi_read_32( const unsigned char *bytes, size_t *p )
 	return ( a << 24 ) | ( b << 16 ) | ( c << 8 ) | d;
 }
 
+void qix_write_string( unsigned char **bytes, const char *str )
+{
+	/*
+	unsigned char *b = *bytes;
+
+	while ( *str )
+		*b++ = *str++;
+
+	*bytes = b;
+	/* */
+}
+
 typedef struct
 {
 	size_t width;        // Width in pixels
@@ -374,7 +386,7 @@ unsigned int *qix_zigzag_columns( const void *data, const image_t *image )
 
 			for ( size_t y = 0, SY = image->height; y < SY; ++y )
 			{
-				_mm_prefetch((const char*)src + image->stride, _MM_HINT_T0);
+				_mm_prefetch( ( const char * )src + image->stride, _MM_HINT_T0 );
 
 				if ( y & 1 )
 				{
@@ -408,6 +420,7 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 	memset( stats, 0, sizeof( stats_t ) );
 
 	qoi_rgba_t index[QOI_COLOR_CACHE_SIZE] = { 0 };
+	qoi_rgba_t lru[QOI_LRU_CACHE_SIZE] = { 0 };
 
 	int run = 0;
 	qoi_rgba_t px = { .rgba = {.r = 0, .g = 0, .b = 0, .a = 0 } };
@@ -438,6 +451,8 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 		if ( flushRun )
 		{
+			qix_write_string( &bytes, "<R8>" );
+
 			unsigned char *start = bytes;
 			--run;
 
@@ -463,52 +478,63 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 				continue;
 		}
 
-		pxPrevYUV = pxYUV;
+		qoi_rgba_t *lruPtr = lru + 5;
+		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 6; continue; }
+		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 5; continue; }
+		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 4; continue; }
+		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 3; continue; }
+		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 2; continue; }
+		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 1; continue; }
+
+		unsigned int index_pos = QOI_COLOR_HASH( px ) % QOI_COLOR_CACHE_SIZE;
+		QOI_STATS( count_hash_bucket[index_pos] );
+
+		if ( index[index_pos].v == px.v )
+		{
+			qix_write_string( &bytes, "<I>" );
+
+			*bytes++ = index_pos;
+			QOI_STATS( count_index );
+			continue;
+		}
+
+		index[index_pos] = px;
+
+		for ( size_t i = 0; i < QOI_LRU_CACHE_SIZE - 1; ++i ) lru[i] = lru[i + 1];
+		lru[QOI_LRU_CACHE_SIZE - 1] = px;
 
 		int Co = ( ( int )px.rgba.r - ( int )px.rgba.b ) / 2 + 128;
 		int tmp = px.rgba.b + ( Co - 128 ) / 2;
 		int Cg = ( px.rgba.g - tmp ) / 2 + 128;
 		int Y = tmp + ( Cg - 128 );
 
+		pxPrevYUV = pxYUV;
+
 		pxYUV.rgba.r = Y;
 		pxYUV.rgba.g = Co;
 		pxYUV.rgba.b = Cg;
 
-		unsigned int index_pos = QOI_COLOR_HASH( pxYUV ) % QOI_COLOR_CACHE_SIZE;
-		QOI_STATS( count_hash_bucket[index_pos] );
-
-		if ( index[index_pos].v == pxYUV.v )
 		{
-			*bytes++ = index_pos;
-			QOI_STATS( count_index );
-		}
-		else
-		{
-			index[index_pos] = pxYUV;
+			//index[index_pos] = pxYUV;
 
 			int vr = pxYUV.rgba.r - pxPrevYUV.rgba.r;
 			int vg = pxYUV.rgba.g - pxPrevYUV.rgba.g;
 			int vb = pxYUV.rgba.b - pxPrevYUV.rgba.b;
 
 			// Color mode
-			if (
-			    QIX_RANGE( vr, 64 ) &&
-			    QIX_RANGE( vg, 32 ) && QIX_RANGE( vb, 32 )
-			)
+			if ( QIX_RANGE( vr, 64 ) && QIX_RANGE( vg, 32 ) && QIX_RANGE( vb, 32 ) )
 			{
-				if (
-				    QIX_RANGE( vr, 2 ) &&
-				    QIX_RANGE( vg, 2 ) && QIX_RANGE( vb, 2 )
-				)
+				if ( QIX_RANGE( vr, 2 ) && QIX_RANGE( vg, 2 ) && QIX_RANGE( vb, 2 ) )
 				{
+					qix_write_string( &bytes, "<D8>" );
+
 					*bytes++ = QOI_DIFF_8 | ( ( vr + 2 ) << 4 ) | ( vg + 2 ) << 2 | ( vb + 2 );
 					QOI_STATS( count_diff_8 );
 				}
-				else if (
-				    QIX_RANGE( vr, 8 ) &&
-				    QIX_RANGE( vg, 8 ) && QIX_RANGE( vb, 8 )
-				)
+				else if ( QIX_RANGE( vr, 8 ) && QIX_RANGE( vg, 8 ) && QIX_RANGE( vb, 8 ) )
 				{
+					qix_write_string( &bytes, "<D16>" );
+
 					unsigned int value =
 					    ( QOI_DIFF_16 << 8 ) | ( ( vr + 8 ) << 8 ) |
 					    ( ( vg + 8 ) << 4 ) | ( vb + 8 );
@@ -520,6 +546,8 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 				{
 					if ( pxYUV.rgba.g == 128 && pxYUV.rgba.b == 128 )
 						goto encodecolor;
+
+					qix_write_string( &bytes, "<D24>" );
 
 					unsigned int value =
 					    ( QOI_DIFF_24 << 16 ) | ( ( vr + 64 ) << 12 ) |
@@ -536,11 +564,15 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 encodecolor:
 				if ( pxYUV.rgba.g == 128 && pxYUV.rgba.b == 128 )
 				{
+					qix_write_string( &bytes, "<BW>" );
+
 					*bytes++ = QOI_COLOR_BW;
 					*bytes++ = pxYUV.rgba.r;
 				}
 				else
 				{
+					qix_write_string( &bytes, "<COL>" );
+
 					*bytes++ = QOI_COLOR;
 					*bytes++ = pxYUV.rgba.r;
 					*bytes++ = pxYUV.rgba.g;
