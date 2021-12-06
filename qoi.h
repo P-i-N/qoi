@@ -297,7 +297,6 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels );
 #define QOI_DIFF_24  0b11110000 // 11110RRR RRRRGGGG GGBBBBBB
 #define QOI_COLOR    0b11111000 // 11111xxx RRRRRRRR GGGGGGGG BBBBBBBB
 #define QOI_COLOR_BW 0b11111001 // 11111001 LLLLLLLL
-#define QOI_COLOR_YU 0b11111001 // 11111010 YYYYYYYY UUUUUUUU
 #define QOI_MODE_COL 0b11111100 // Switch to color mode
 #define QOI_MODE_BW  0b11111101 // Switch to BW mode
 
@@ -319,7 +318,7 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels );
 #define QOI_CHUNK_W 16
 #define QOI_CHUNK_H 16
 #define QOI_SEPARATE_COLUMNS
-//#define QOI_STATS(N) stats->N++
+#define QOI_STATS(N) stats->N++
 
 #ifndef QOI_STATS
 	#define QOI_STATS(N)
@@ -375,6 +374,8 @@ unsigned int *qix_zigzag_columns( const void *data, const image_t *image )
 
 			for ( size_t y = 0, SY = image->height; y < SY; ++y )
 			{
+				_mm_prefetch((const char*)src + image->stride, _MM_HINT_T0);
+
 				if ( y & 1 )
 				{
 					for ( size_t x = 0, nx = sizeX; x < sizeX; ++x )
@@ -417,13 +418,13 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 	for ( size_t i = 0; i < numSrcPixels; ++i )
 	{
-		bool diffFromPrev = px.v != src[0];
+		bool sameAsPrev = px.v == src[0];
 		bool flushRun = false;
 
 		px.v = *src++;
 		_mm_prefetch( ( const char * )src, _MM_HINT_T0 );
 
-		if ( !diffFromPrev )
+		if ( sameAsPrev )
 		{
 			run++;
 			flushRun = ( i == numSrcPixels - 1 );
@@ -458,7 +459,7 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 			run = 0;
 
-			if ( !diffFromPrev )
+			if ( sameAsPrev )
 				continue;
 		}
 
@@ -470,8 +471,8 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 		int Y = tmp + ( Cg - 128 );
 
 		pxYUV.rgba.r = Y;
-		pxYUV.rgba.g = Co >> 4;
-		pxYUV.rgba.b = Cg >> 4;
+		pxYUV.rgba.g = Co;
+		pxYUV.rgba.b = Cg;
 
 		unsigned int index_pos = QOI_COLOR_HASH( pxYUV ) % QOI_COLOR_CACHE_SIZE;
 		QOI_STATS( count_hash_bucket[index_pos] );
@@ -533,26 +534,17 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 			else
 			{
 encodecolor:
-				if ( pxYUV.rgba.g == pxYUV.rgba.b )
+				if ( pxYUV.rgba.g == 128 && pxYUV.rgba.b == 128 )
 				{
-					if ( ( pxYUV.rgba.g << 4 ) == 128 )
-					{
-						*bytes++ = QOI_COLOR_BW;
-						*bytes++ = pxYUV.rgba.r;
-					}
-					else
-					{
-						*bytes++ = QOI_COLOR_YU;
-						*bytes++ = pxYUV.rgba.r;
-						*bytes++ = pxYUV.rgba.g << 4;
-					}
+					*bytes++ = QOI_COLOR_BW;
+					*bytes++ = pxYUV.rgba.r;
 				}
 				else
 				{
 					*bytes++ = QOI_COLOR;
 					*bytes++ = pxYUV.rgba.r;
-					*bytes++ = pxYUV.rgba.g << 4;
-					//*bytes++ = pxYUV.rgba.b << 4;
+					*bytes++ = pxYUV.rgba.g;
+					*bytes++ = pxYUV.rgba.b;
 				}
 				QOI_STATS( count_color );
 			}
@@ -606,8 +598,8 @@ void *qoi_encode( const void *data, const qoi_desc *desc, int *out_len, stats_t 
 	img.channels = desc->channels;
 	img.segment_size = QOI_CHUNK_W;
 
-	//unsigned int *zigzagData = qix_zigzag_columns( data, &img );
-	unsigned int *zigzagData = ( unsigned int * )data;
+	unsigned int *zigzagData = qix_zigzag_columns( data, &img );
+	//unsigned int *zigzagData = ( unsigned int * )data;
 
 	for ( size_t s = 0, S = ( img.width + img.segment_size - 1 ) / img.segment_size; s < S; ++s )
 	{
@@ -621,7 +613,8 @@ void *qoi_encode( const void *data, const qoi_desc *desc, int *out_len, stats_t 
 		stats->count_diff_8 += column_stats.count_diff_8;
 		stats->count_diff_16 += column_stats.count_diff_16;
 		stats->count_run_8 += column_stats.count_run_8;
-		stats->count_diff_24 += column_stats.count_color;
+		stats->count_diff_24 += column_stats.count_diff_24;
+		stats->count_color += column_stats.count_color;
 	}
 
 	if ( zigzagData != data )
