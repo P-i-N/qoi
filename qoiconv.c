@@ -3,7 +3,7 @@
 Command line tool to convert between png <> qoi format
 
 Requires "stb_image.h" and "stb_image_write.h"
-Compile with: 
+Compile with:
 	gcc qoiconv.c -std=c99 -O3 -o qoiconv
 
 Dominic Szablewski - https://phoboslab.org
@@ -46,34 +46,40 @@ SOFTWARE.
 
 #define STR_ENDS_WITH(S, E) (strcmp(S + strlen(S) - (sizeof(E)-1), E) == 0)
 
-int main(int argc, char **argv) {
-	if (argc < 3) {
-		printf("Usage: qoiconv <infile> <outfile>\n");
-		printf("Examples:\n");
-		printf("  qoiconv input.png output.qoi\n");
-		printf("  qoiconv input.qoi output.png\n");
-		exit(1);
+int main( int argc, char **argv )
+{
+	if ( argc < 3 )
+	{
+		printf( "Usage: qoiconv <infile> <outfile>\n" );
+		printf( "Examples:\n" );
+		printf( "  qoiconv input.png output.qoi\n" );
+		printf( "  qoiconv input.qoi output.png\n" );
+		exit( 1 );
 	}
 
 	void *pixels = NULL;
 	int w, h, channels;
 
-	printf("Reading %s\n", argv[1]);
+	printf( "Reading %s\n", argv[1] );
 
-	if (STR_ENDS_WITH(argv[1], ".png")) {
-		pixels = (void *)stbi_load(argv[1], &w, &h, &channels, 0);
+	if ( STR_ENDS_WITH( argv[1], ".png" ) )
+	{
+		pixels = ( void * )stbi_load( argv[1], &w, &h, &channels, 0 );
 	}
-	else if (STR_ENDS_WITH(argv[1], ".qoi")) {
-		qoi_desc desc;
-		pixels = qoi_read(argv[1], &desc, 0);
+	else if ( STR_ENDS_WITH( argv[1], ".qoi" ) )
+	{
+		qix_desc desc;
+		pixels = qix_read( argv[1], &desc, 0 );
 		channels = desc.channels;
 		w = desc.width;
 		h = desc.height;
 	}
 
-	if (channels == 4) {
-		unsigned char* px_ptr = (unsigned char*)pixels;
-		for (int i = 0, S = w * h; i < S; ++i, px_ptr += 4) {
+	if ( channels == 4 )
+	{
+		unsigned char *px_ptr = ( unsigned char * )pixels;
+		for ( int i = 0, S = w * h; i < S; ++i, px_ptr += 4 )
+		{
 			px_ptr[0] = px_ptr[3];
 			px_ptr[1] = px_ptr[3];
 			px_ptr[2] = px_ptr[3];
@@ -81,46 +87,52 @@ int main(int argc, char **argv) {
 		}
 	}
 
-	if (pixels == NULL) {
-		printf("Couldn't load/decode %s\n", argv[1]);
-		exit(1);
+	if ( pixels == NULL )
+	{
+		printf( "Couldn't load/decode %s\n", argv[1] );
+		exit( 1 );
 	}
 
-	printf("Writing %s\n", argv[2]);
+	printf( "Writing %s\n", argv[2] );
 
 	int encoded = 0;
-	if (STR_ENDS_WITH(argv[2], ".png")) {
-		encoded = stbi_write_png(argv[2], w, h, channels, pixels, 0);
+	if ( STR_ENDS_WITH( argv[2], ".png" ) )
+	{
+		encoded = stbi_write_png( argv[2], w, h, channels, pixels, 0 );
 	}
-	else if (STR_ENDS_WITH(argv[2], ".qoi")) {
-		encoded = qoi_write(argv[2], pixels, &(qoi_desc){
+	else if ( STR_ENDS_WITH( argv[2], ".qoi" ) )
+	{
+		encoded = qix_write( argv[2], pixels, &( qix_desc )
+		{
 			.width = w,
-			.height = h, 
+			.height = h,
 			.channels = channels,
 			.colorspace = QIX_SRGB
-		});
+		} );
 
 		// Try decoding as well...
-		printf("Reading %s\n", argv[2]);
+		printf( "Reading %s\n", argv[2] );
 
-		qoi_desc desc;
-		pixels = qoi_read(argv[2], &desc, 0);
+		qix_desc desc;
+		pixels = qix_read( argv[2], &desc, 0 );
 		channels = desc.channels;
 		w = desc.width;
 		h = desc.height;
 
-		if (pixels) {
+		if ( pixels )
+		{
 			char buff[256] = { 0 };
-			sprintf(buff, "%s_decoded.png", argv[2]);
-			stbi_write_png(buff, w, h, channels, pixels, 0);
+			sprintf( buff, "%s_decoded.png", argv[2] );
+			stbi_write_png( buff, w, h, channels, pixels, 0 );
 		}
 	}
 
-	if (!encoded) {
-		printf("Couldn't write/encode %s\n", argv[2]);
-		exit(1);
+	if ( !encoded )
+	{
+		printf( "Couldn't write/encode %s\n", argv[2] );
+		exit( 1 );
 	}
 
-	free(pixels);
+	free( pixels );
 	return 0;
 }
