@@ -39,10 +39,10 @@ than stbi_image or libpng.
 
 -- Synopsis
 
-// Define `QOI_IMPLEMENTATION` in *one* C/C++ file before including this
+// Define `QIX_IMPLEMENTATION` in *one* C/C++ file before including this
 // library to create the implementation.
 
-#define QOI_IMPLEMENTATION
+#define QIX_IMPLEMENTATION
 #include "qoi.h"
 
 // Encode and store an RGBA buffer to the file system. The qoi_desc describes
@@ -51,7 +51,7 @@ qoi_write("image_new.qoi", rgba_pixels, &(qoi_desc){
 	.width = 1920,
 	.height = 1080,
 	.channels = 4,
-	.colorspace = QOI_SRGB
+	.colorspace = QIX_SRGB
 });
 
 // Load and decode a QOI image from the file system into a 32bbp RGBA buffer.
@@ -73,10 +73,10 @@ This library provides the following functions;
 See the function declaration below for the signature and more information.
 
 If you don't want/need the qoi_read and qoi_write functions, you can define
-QOI_NO_STDIO before including this library.
+QIX_NO_STDIO before including this library.
 
 This library uses malloc() and free(). To supply your own malloc implementation
-you can define QOI_MALLOC and QOI_FREE before including this library.
+you can define QIX_MALLOC and QIX_FREE before including this library.
 
 
 -- Data Format
@@ -109,26 +109,26 @@ index matches the current pixel, this index position is written to the stream.
 Each chunk starts with a 2, 3 or 4 bit tag, followed by a number of data bits.
 The bit length of chunks is divisible by 8 - i.e. all chunks are byte aligned.
 
-QOI_INDEX {
+QIX_INDEX {
 	u8 tag  :  2;   // b00
 	u8 idx  :  6;   // 6-bit index into the color index array: 0..63
 }
 
-QOI_DIFF_8 {
+QIX_DIFF_8 {
 	u8 tag  :  2;   // b01
 	u8 dr   :  2;   // 2-bit   red channel difference: -2..1
 	u8 dg   :  2;   // 2-bit green channel difference: -2..1
 	u8 db   :  2;   // 2-bit  blue channel difference: -2..1
 }
 
-QOI_DIFF_16 {
+QIX_DIFF_16 {
 	u8 tag  :  3;   // b10
 	u8 dr   :  5;   // 5-bit   red channel difference: -16..15
 	u8 dg   :  5;   // 5-bit green channel difference: -16..15
 	u8 db   :  4;   // 4-bit  blue channel difference:  -8.. 7
 }
 
-QOI_DIFF_16_A {
+QIX_DIFF_16_A {
 	u8 tag  :  3;   // b10
 	u8 da   :  2;   // 2-bit  blue channel difference:  -2.. 1
 	u8 dr   :  4;   // 4-bit   red channel difference:  -8..7
@@ -136,19 +136,19 @@ QOI_DIFF_16_A {
 	u8 db   :  4;   // 4-bit  blue channel difference:  -8.. 7
 }
 
-QOI_RUN_8 {
+QIX_RUN_8 {
 	u8 tag  :  3;   // b110
 	u8 run  :  5;   // 5-bit run-length (-1) repeating the previous pixel: 0..31, can be repeated
 }
 
-QOI_DIFF_24 {
+QIX_DIFF_24 {
 	u8 tag  :  4;   // b1110
 	u8 dr   :  7;   // 7-bit   red channel difference: -64..63
 	u8 dg   :  7;   // 7-bit green channel difference: -64..63
 	u8 db   :  6;   // 6-bit  blue channel difference: -32..31
 }
 
-QOI_DIFF_24_A {
+QIX_DIFF_24_A {
 	u8 tag  :  4;   // b1110
 	u8 da   :  5;   // 5-bit alpha channel difference: -16..15
 	u8 dr   :  5;   // 5-bit   red channel difference: -16..15
@@ -156,7 +156,7 @@ QOI_DIFF_24_A {
 	u8 db   :  5;   // 5-bit  blue channel difference: -16..15
 }
 
-QOI_COLOR {
+QIX_COLOR {
 	u8 tag  :  4;   // b1111
 	u8 has_r:  1;   //   red byte follows
 	u8 has_g:  1;   // green byte follows
@@ -170,7 +170,7 @@ QOI_COLOR {
 }
 
 The byte stream is padded with 4 zero bytes. Size the longest chunk we can
-encounter is 5 bytes (QOI_COLOR with RGBA set), with this padding we just have
+encounter is 5 bytes (QIX_COLOR with RGBA set), with this padding we just have
 to check for an overrun once per decode loop iteration.
 
 */
@@ -179,8 +179,8 @@ to check for an overrun once per decode loop iteration.
 // -----------------------------------------------------------------------------
 // Header - Public functions
 
-#ifndef QOI_H
-#define QOI_H
+#ifndef QIX_H
+#define QIX_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -194,16 +194,16 @@ extern "C" {
 
 // The colorspace in this qoi_desc is a bitmap with 0000rgba where a 0-bit
 // indicates sRGB and a 1-bit indicates linear colorspace for each channel. You
-// may use one of the predefined constants: QOI_SRGB, QOI_SRGB_LINEAR_ALPHA or
-// QOI_LINEAR. The colorspace is purely informative. It will be saved to the
+// may use one of the predefined constants: QIX_SRGB, QIX_SRGB_LINEAR_ALPHA or
+// QIX_LINEAR. The colorspace is purely informative. It will be saved to the
 // file header, but does not affect en-/decoding in any way.
 
-#define QOI_SRGB 0x00
-#define QOI_SRGB_LINEAR_ALPHA 0x01
-#define QOI_LINEAR 0x0f
+#define QIX_SRGB 0x00
+#define QIX_SRGB_LINEAR_ALPHA 0x01
+#define QIX_LINEAR 0x0f
 
-#define QOI_COLOR_CACHE_SIZE 128
-#define QOI_LRU_CACHE_SIZE 6
+#define QIX_COLOR_CACHE_SIZE 128
+#define QIX_LRU_CACHE_SIZE 6
 
 typedef struct
 {
@@ -216,8 +216,9 @@ typedef struct
 
 typedef struct
 {
-	unsigned int count_hash_bucket[QOI_COLOR_CACHE_SIZE];
+	unsigned int count_hash_bucket[QIX_COLOR_CACHE_SIZE];
 	unsigned int count_index;
+	unsigned int count_lru;
 	unsigned int count_diff_8;
 	unsigned int count_diff_16;
 	unsigned int count_run_8;
@@ -225,7 +226,7 @@ typedef struct
 	unsigned int count_color;
 } stats_t;
 
-#ifndef QOI_NO_STDIO
+#ifndef QIX_NO_STDIO
 
 	// Encode raw RGB or RGBA pixels into a QOI image and write it to the file
 	// system. The qoi_desc struct must be filled with the image width, height,
@@ -249,7 +250,7 @@ typedef struct
 
 	void *qoi_read( const char *filename, qoi_desc *desc, int channels );
 
-#endif // QOI_NO_STDIO
+#endif // QIX_NO_STDIO
 
 
 // Encode raw RGB or RGBA pixels into a QOI image in memory.
@@ -277,54 +278,54 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels );
 #ifdef __cplusplus
 }
 #endif
-#endif // QOI_H
+#endif // QIX_H
 
 
 // -----------------------------------------------------------------------------
 // Implementation
 
-#ifdef QOI_IMPLEMENTATION
+#ifdef QIX_IMPLEMENTATION
 #include <stdlib.h>
 
-#ifndef QOI_MALLOC
-	#define QOI_MALLOC(sz) (unsigned char *)malloc(sz)
-	#define QOI_FREE(p)    free(p)
+#ifndef QIX_MALLOC
+	#define QIX_MALLOC(sz) (unsigned char *)malloc(sz)
+	#define QIX_FREE(p)    free(p)
 #endif
 
-#define QOI_INDEX    0b00000000 // 0xxxxxxx
-#define QOI_DIFF_8   0b10000000 // 10RRGGBB or 10xxxxxx
-#define QOI_RUN_8    0b11000000 // 110xxxxx
-#define QOI_DIFF_16  0b11100000 // 1110RRRR GGGGBBBB or 1110xxxx
-#define QOI_DIFF_24  0b11110000 // 11110RRR RRRRGGGG GGBBBBBB
-#define QOI_COLOR    0b11111000 // 11111xxx RRRRRRRR GGGGGGGG BBBBBBBB
-#define QOI_COLOR_BW 0b11111111 // 11111001 LLLLLLLL
-#define QOI_LRU      0b11111000 // 11111xxx
+#define QIX_INDEX    0b00000000 // 0xxxxxxx
+#define QIX_DIFF_8   0b10000000 // 10RRGGBB or 10xxxxxx
+#define QIX_RUN_8    0b11000000 // 110xxxxx
+#define QIX_DIFF_16  0b11100000 // 1110RRRR GGGGBBBB or 1110xxxx
+#define QIX_DIFF_24  0b11110000 // 11110RRR RRRRGGGG GGBBBBBB
+#define QIX_COLOR    0b11111000 // 11111xxx RRRRRRRR GGGGGGGG BBBBBBBB
+#define QIX_COLOR_BW 0b11111111 // 11111001 LLLLLLLL
+#define QIX_LRU      0b11111000 // 11111xxx
 
-#define QOI_MASK_1  0b10000000
-#define QOI_MASK_2  0b11000000
-#define QOI_MASK_3  0b11100000
-#define QOI_MASK_4  0b11110000
-#define QOI_MASK_5  0b11111000
+#define QIX_MASK_1  0b10000000
+#define QIX_MASK_2  0b11000000
+#define QIX_MASK_3  0b11100000
+#define QIX_MASK_4  0b11110000
+#define QIX_MASK_5  0b11111000
 
-#define QOI_COLOR_HASH(C) ( ( (C).rgba.r * 37 + (C).rgba.g ) * 37 + (C).rgba.b )
-#define QOI_MAGIC \
+#define QIX_COLOR_HASH(C) ( ( (C).rgba.r * 37 + (C).rgba.g ) * 37 + (C).rgba.b )
+#define QIX_MAGIC \
 	(((unsigned int)'q') << 24 | ((unsigned int)'i') << 16 | \
 	 ((unsigned int)'x') <<  8 | ((unsigned int)'f'))
-#define QOI_HEADER_SIZE 14
-#define QOI_PADDING 4
+#define QIX_HEADER_SIZE 14
+#define QIX_PADDING 4
 
 #define QIX_RANGE(value, limit) ((value) >= -(limit) && (value) < (limit))
 
-#define QOI_CHUNK_W 16
-#define QOI_CHUNK_H 16
-#define QOI_SEPARATE_COLUMNS
-#define QOI_STATS(N) stats->N++
+#define QIX_CHUNK_W 16
+#define QIX_CHUNK_H 16
+#define QIX_SEPARATE_COLUMNS
+#define QIX_STATS(N) stats->N++
 
-#ifndef QOI_STATS
-	#define QOI_STATS(N)
+#ifndef QIX_STATS
+	#define QIX_STATS(N)
 #endif
 
-#define QOI_SAVE_COLOR(C) index[QOI_COLOR_HASH(C) % QOI_COLOR_CACHE_SIZE] = C
+#define QIX_SAVE_COLOR(C) index[QIX_COLOR_HASH(C) % QIX_COLOR_CACHE_SIZE] = C
 
 typedef union
 	{
@@ -349,16 +350,16 @@ unsigned int qoi_read_32( const unsigned char *bytes, size_t *p )
 	return ( a << 24 ) | ( b << 16 ) | ( c << 8 ) | d;
 }
 
-void qix_write_string( unsigned char **bytes, const char *str )
+void qix_rgb2yuv( const qoi_rgba_t *src, qoi_rgba_t *dst )
 {
-	/*
-	unsigned char *b = *bytes;
+	int Co = ( ( int )src->rgba.r - ( int )src->rgba.b ) / 2 + 128;
+	int tmp = src->rgba.b + ( Co - 128 ) / 2;
+	int Cg = ( src->rgba.g - tmp ) / 2 + 128;
+	int Y = tmp + ( Cg - 128 );
 
-	while ( *str )
-		*b++ = *str++;
-
-	*bytes = b;
-	/* */
+	dst->rgba.r = Y;
+	dst->rgba.g = Co;
+	dst->rgba.b = Cg;
 }
 
 typedef struct
@@ -419,8 +420,8 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 	memset( stats, 0, sizeof( stats_t ) );
 
-	qoi_rgba_t index[QOI_COLOR_CACHE_SIZE] = { 0 };
-	qoi_rgba_t lru[QOI_LRU_CACHE_SIZE] = { 0 };
+	qoi_rgba_t indexRGB[QIX_COLOR_CACHE_SIZE] = { 0 };
+	qoi_rgba_t lruRGB[QIX_LRU_CACHE_SIZE] = { 0 };
 
 	int run = 0;
 	qoi_rgba_t px = { .rgba = {.r = 0, .g = 0, .b = 0, .a = 0 } };
@@ -441,7 +442,7 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 		{
 			run++;
 			flushRun = ( i == numSrcPixels - 1 );
-			QOI_STATS( count_run_8 );
+			QIX_STATS( count_run_8 );
 
 			if ( !flushRun )
 				continue;
@@ -451,14 +452,12 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 		if ( flushRun )
 		{
-			qix_write_string( &bytes, "<R8>" );
-
 			unsigned char *start = bytes;
 			--run;
 
 			do
 			{
-				*bytes++ = QOI_RUN_8 | ( run & 0x1f );
+				*bytes++ = QIX_RUN_8 | ( run & 0x1f );
 				run >>= 5;
 			}
 			while ( run > 0 );
@@ -478,45 +477,39 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 				continue;
 		}
 
-		qoi_rgba_t *lruPtr = lru + 5;
-		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 6; continue; }
-		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 5; continue; }
-		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 4; continue; }
-		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 3; continue; }
-		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 2; continue; }
-		if ( px.v == ( *lruPtr-- ).v ) { *bytes++ = QOI_COLOR | 1; continue; }
+		pxPrevYUV = pxYUV;
+		qix_rgb2yuv( &px, &pxYUV );
 
-		unsigned int index_pos = QOI_COLOR_HASH( px ) % QOI_COLOR_CACHE_SIZE;
-		QOI_STATS( count_hash_bucket[index_pos] );
+		unsigned int index_pos = QIX_COLOR_HASH( pxYUV ) % QIX_COLOR_CACHE_SIZE;
+		QIX_STATS( count_hash_bucket[index_pos] );
 
-		if ( index[index_pos].v == px.v )
+		if ( indexRGB[index_pos].v == pxYUV.v )
 		{
-			qix_write_string( &bytes, "<I>" );
-
 			*bytes++ = index_pos;
-			QOI_STATS( count_index );
+			QIX_STATS( count_index );
 			continue;
 		}
 
-		index[index_pos] = px;
-
-		for ( size_t i = 0; i < QOI_LRU_CACHE_SIZE - 1; ++i ) lru[i] = lru[i + 1];
-		lru[QOI_LRU_CACHE_SIZE - 1] = px;
-
-		int Co = ( ( int )px.rgba.r - ( int )px.rgba.b ) / 2 + 128;
-		int tmp = px.rgba.b + ( Co - 128 ) / 2;
-		int Cg = ( px.rgba.g - tmp ) / 2 + 128;
-		int Y = tmp + ( Cg - 128 );
-
-		pxPrevYUV = pxYUV;
-
-		pxYUV.rgba.r = Y;
-		pxYUV.rgba.g = Co;
-		pxYUV.rgba.b = Cg;
+		indexRGB[index_pos] = pxYUV;
 
 		{
-			//index[index_pos] = pxYUV;
+			int lruIndex = QIX_LRU_CACHE_SIZE;
+			while ( lruIndex-- )
+				if ( lruRGB[lruIndex].v == px.v )
+					break;
 
+			if ( lruIndex >= 0 )
+			{
+				*bytes++ = QIX_LRU | lruIndex;
+				QIX_STATS( count_lru );
+				continue;
+			}
+		}
+
+		for ( size_t i = 0; i < QIX_LRU_CACHE_SIZE - 1; ++i ) lruRGB[i] = lruRGB[i + 1];
+		lruRGB[QIX_LRU_CACHE_SIZE - 1] = px;
+
+		{
 			int vr = pxYUV.rgba.r - pxPrevYUV.rgba.r;
 			int vg = pxYUV.rgba.g - pxPrevYUV.rgba.g;
 			int vb = pxYUV.rgba.b - pxPrevYUV.rgba.b;
@@ -526,37 +519,31 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 			{
 				if ( QIX_RANGE( vr, 2 ) && QIX_RANGE( vg, 2 ) && QIX_RANGE( vb, 2 ) )
 				{
-					qix_write_string( &bytes, "<D8>" );
-
-					*bytes++ = QOI_DIFF_8 | ( ( vr + 2 ) << 4 ) | ( vg + 2 ) << 2 | ( vb + 2 );
-					QOI_STATS( count_diff_8 );
+					*bytes++ = QIX_DIFF_8 | ( ( vr + 2 ) << 4 ) | ( vg + 2 ) << 2 | ( vb + 2 );
+					QIX_STATS( count_diff_8 );
 				}
 				else if ( QIX_RANGE( vr, 8 ) && QIX_RANGE( vg, 8 ) && QIX_RANGE( vb, 8 ) )
 				{
-					qix_write_string( &bytes, "<D16>" );
-
 					unsigned int value =
-					    ( QOI_DIFF_16 << 8 ) | ( ( vr + 8 ) << 8 ) |
+					    ( QIX_DIFF_16 << 8 ) | ( ( vr + 8 ) << 8 ) |
 					    ( ( vg + 8 ) << 4 ) | ( vb + 8 );
 					*bytes++ = ( unsigned char )( value >> 8 );
 					*bytes++ = ( unsigned char )( value );
-					QOI_STATS( count_diff_16 );
+					QIX_STATS( count_diff_16 );
 				}
 				else
 				{
 					if ( pxYUV.rgba.g == 128 && pxYUV.rgba.b == 128 )
 						goto encodecolor;
 
-					qix_write_string( &bytes, "<D24>" );
-
 					unsigned int value =
-					    ( QOI_DIFF_24 << 16 ) | ( ( vr + 64 ) << 12 ) |
+					    ( QIX_DIFF_24 << 16 ) | ( ( vr + 64 ) << 12 ) |
 					    ( ( vg + 32 ) << 6 ) | ( vb + 32 );
 
 					*bytes++ = ( unsigned char )( value >> 16 );
 					*bytes++ = ( unsigned char )( value >> 8 );
 					*bytes++ = ( unsigned char )( value );
-					QOI_STATS( count_diff_24 );
+					QIX_STATS( count_diff_24 );
 				}
 			}
 			else
@@ -564,21 +551,17 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 encodecolor:
 				if ( pxYUV.rgba.g == 128 && pxYUV.rgba.b == 128 )
 				{
-					qix_write_string( &bytes, "<BW>" );
-
-					*bytes++ = QOI_COLOR_BW;
+					*bytes++ = QIX_COLOR_BW;
 					*bytes++ = pxYUV.rgba.r;
 				}
 				else
 				{
-					qix_write_string( &bytes, "<COL>" );
-
-					*bytes++ = QOI_COLOR;
+					*bytes++ = QIX_COLOR;
 					*bytes++ = pxYUV.rgba.r;
 					*bytes++ = pxYUV.rgba.g;
 					*bytes++ = pxYUV.rgba.b;
 				}
-				QOI_STATS( count_color );
+				QIX_STATS( count_color );
 			}
 		}
 	}
@@ -608,16 +591,16 @@ void *qoi_encode( const void *data, const qoi_desc *desc, int *out_len, stats_t 
 
 	int max_size =
 	    desc->width * desc->height * ( desc->channels + 1 ) +
-	    QOI_HEADER_SIZE + QOI_PADDING;
+	    QIX_HEADER_SIZE + QIX_PADDING;
 
 	size_t p = 0;
-	unsigned char *bytes = QOI_MALLOC( max_size );
+	unsigned char *bytes = QIX_MALLOC( max_size );
 	if ( !bytes )
 	{
 		return NULL;
 	}
 
-	qoi_write_32( bytes, &p, QOI_MAGIC );
+	qoi_write_32( bytes, &p, QIX_MAGIC );
 	qoi_write_32( bytes, &p, desc->width );
 	qoi_write_32( bytes, &p, desc->height );
 	bytes[p++] = desc->channels;
@@ -628,7 +611,7 @@ void *qoi_encode( const void *data, const qoi_desc *desc, int *out_len, stats_t 
 	img.height = desc->height;
 	img.stride = desc->width * desc->channels;
 	img.channels = desc->channels;
-	img.segment_size = QOI_CHUNK_W;
+	img.segment_size = QIX_CHUNK_W;
 
 	unsigned int *zigzagData = qix_zigzag_columns( data, &img );
 	//unsigned int *zigzagData = ( unsigned int * )data;
@@ -642,6 +625,7 @@ void *qoi_encode( const void *data, const qoi_desc *desc, int *out_len, stats_t 
 		p += qix_encode_rgb( src, sizeX * img.height, bytes + p, &column_stats );
 
 		stats->count_index += column_stats.count_index;
+		stats->count_lru += column_stats.count_lru;
 		stats->count_diff_8 += column_stats.count_diff_8;
 		stats->count_diff_16 += column_stats.count_diff_16;
 		stats->count_run_8 += column_stats.count_run_8;
@@ -652,7 +636,7 @@ void *qoi_encode( const void *data, const qoi_desc *desc, int *out_len, stats_t 
 	if ( zigzagData != data )
 		free( zigzagData );
 
-	for ( int i = 0; i < QOI_PADDING; i++ )
+	for ( int i = 0; i < QIX_PADDING; i++ )
 		bytes[p++] = 0;
 
 	*out_len = ( int )p;
@@ -664,7 +648,7 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 	if (
 	    data == NULL || desc == NULL ||
 	    ( channels != 0 && channels != 3 && channels != 4 ) ||
-	    size < QOI_HEADER_SIZE + QOI_PADDING
+	    size < QIX_HEADER_SIZE + QIX_PADDING
 	)
 	{
 		return NULL;
@@ -682,7 +666,7 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 	if (
 	    desc->width == 0 || desc->height == 0 ||
 	    desc->channels < 3 || desc->channels > 4 ||
-	    header_magic != QOI_MAGIC
+	    header_magic != QIX_MAGIC
 	)
 	{
 		return NULL;
@@ -694,32 +678,32 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 	}
 
 	int px_len = desc->width * desc->height * channels;
-	unsigned char *pixels = QOI_MALLOC( px_len );
+	unsigned char *pixels = QIX_MALLOC( px_len );
 	if ( !pixels )
 	{
 		return NULL;
 	}
 
 	qoi_rgba_t px = {.rgba = {.r = 0, .g = 0, .b = 0, .a = 255}};
-	qoi_rgba_t index[QOI_COLOR_CACHE_SIZE] = { 0 };
+	qoi_rgba_t index[QIX_COLOR_CACHE_SIZE] = { 0 };
 	qoi_rgba_t pxRGB = { 0 };
 
 	int run = 0;
 	int mode = 0;
-	int chunks_len = size - QOI_PADDING;
+	int chunks_len = size - QIX_PADDING;
 
-	int chunks_x_count = desc->width / QOI_CHUNK_W;
+	int chunks_x_count = desc->width / QIX_CHUNK_W;
 
 	for ( int chunk_x = 0; chunk_x < chunks_x_count; chunk_x++ )
 	{
-		int x_pixels = QOI_CHUNK_W;
+		int x_pixels = QIX_CHUNK_W;
 		if ( chunk_x == chunks_x_count - 1 )
 		{
-			x_pixels = desc->width - ( chunks_x_count - 1 ) * QOI_CHUNK_W;
+			x_pixels = desc->width - ( chunks_x_count - 1 ) * QIX_CHUNK_W;
 		}
 
-#ifdef QOI_SEPARATE_COLUMNS
-		memset( index, 0, sizeof( qoi_rgba_t ) * QOI_COLOR_CACHE_SIZE );
+#ifdef QIX_SEPARATE_COLUMNS
+		memset( index, 0, sizeof( qoi_rgba_t ) * QIX_COLOR_CACHE_SIZE );
 		run = 0;
 		px.rgba.r = 0;
 		px.rgba.g = 0;
@@ -730,7 +714,7 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 		mode = 0;
 #endif
 
-		int px_chunk_pos = chunk_x * QOI_CHUNK_W;
+		int px_chunk_pos = chunk_x * QIX_CHUNK_W;
 		unsigned char *px_ptr = pixels + px_chunk_pos * channels;
 
 		for ( int y = 0, inc = channels, SY = desc->height; y < SY; y++, px_chunk_pos += desc->width, inc *= -1 )
@@ -745,14 +729,14 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 				{
 					int b1 = bytes[p++];
 
-					if ( ( b1 & QOI_MASK_1 ) == QOI_INDEX )
+					if ( ( b1 & QIX_MASK_1 ) == QIX_INDEX )
 					{
 						px = index[b1];
 					}
-					else if ( ( b1 & QOI_MASK_3 ) == QOI_RUN_8 )
+					else if ( ( b1 & QIX_MASK_3 ) == QIX_RUN_8 )
 					{
 						run = b1 & 0x1f;
-						while ( p < chunks_len && ( ( b1 = bytes[p] ) & QOI_MASK_3 ) == QOI_RUN_8 )
+						while ( p < chunks_len && ( ( b1 = bytes[p] ) & QIX_MASK_3 ) == QIX_RUN_8 )
 						{
 							p++;
 							run <<= 5;
@@ -760,14 +744,14 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 						}
 						// no need to increment here, one implied copy
 					}
-					else if ( ( b1 & QOI_MASK_2 ) == QOI_DIFF_8 )
+					else if ( ( b1 & QIX_MASK_2 ) == QIX_DIFF_8 )
 					{
 						px.rgba.r += ( ( b1 >> 4 ) & 0x03 ) - 2;
 						px.rgba.g += ( ( b1 >> 2 ) & 0x03 ) - 2;
 						px.rgba.b += ( b1       & 0x03 ) - 2;
-						QOI_SAVE_COLOR( px );
+						QIX_SAVE_COLOR( px );
 					}
-					else if ( ( b1 & QOI_MASK_4 ) == QOI_DIFF_16 )
+					else if ( ( b1 & QIX_MASK_4 ) == QIX_DIFF_16 )
 					{
 						b1 = ( b1 << 8 ) + bytes[p++];
 
@@ -785,9 +769,9 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 							px.rgba.a += ( ( b1 >> 12 ) & 0x03 ) - 2;
 						}
 
-						QOI_SAVE_COLOR( px );
+						QIX_SAVE_COLOR( px );
 					}
-					else if ( ( b1 & QOI_MASK_5 ) == QOI_DIFF_24 )
+					else if ( ( b1 & QIX_MASK_5 ) == QIX_DIFF_24 )
 					{
 						b1 <<= 16;
 						b1 |= bytes[p++] << 8;
@@ -807,11 +791,11 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 							px.rgba.a += ( ( b1 >> 15 ) & 0x1f ) - 16;
 						}
 
-						QOI_SAVE_COLOR( px );
+						QIX_SAVE_COLOR( px );
 					}
-					else if ( ( b1 & QOI_MASK_5 ) == QOI_COLOR )
+					else if ( ( b1 & QIX_MASK_5 ) == QIX_COLOR )
 					{
-						if ( b1 == QOI_COLOR_BW )
+						if ( b1 == QIX_COLOR_BW )
 						{
 							px.rgba.r = bytes[p++];
 							px.rgba.g = px.rgba.b = 128;
@@ -822,7 +806,7 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 							px.rgba.g = bytes[p++];
 							px.rgba.b = bytes[p++];
 						}
-						QOI_SAVE_COLOR( px );
+						QIX_SAVE_COLOR( px );
 					}
 
 					int tmp = ( int )px.rgba.r - ( ( int )px.rgba.b - 128 );
@@ -851,7 +835,7 @@ void *qoi_decode( const void *data, int size, qoi_desc *desc, int channels )
 	return pixels;
 }
 
-#ifndef QOI_NO_STDIO
+#ifndef QIX_NO_STDIO
 #include <stdio.h>
 
 int qoi_write( const char *filename, const void *data, const qoi_desc *desc )
@@ -866,13 +850,13 @@ int qoi_write( const char *filename, const void *data, const qoi_desc *desc )
 	FILE *f = fopen( filename, "wb" );
 	if ( !f )
 	{
-		QOI_FREE( encoded );
+		QIX_FREE( encoded );
 		return 0;
 	}
 
 	fwrite( encoded, 1, size, f );
 	fclose( f );
-	QOI_FREE( encoded );
+	QIX_FREE( encoded );
 	return size;
 }
 
@@ -888,7 +872,7 @@ void *qoi_read( const char *filename, qoi_desc *desc, int channels )
 	int size = ftell( f );
 	fseek( f, 0, SEEK_SET );
 
-	void *data = QOI_MALLOC( size );
+	void *data = QIX_MALLOC( size );
 	if ( !data )
 	{
 		fclose( f );
@@ -899,9 +883,9 @@ void *qoi_read( const char *filename, qoi_desc *desc, int channels )
 	fclose( f );
 
 	void *pixels = qoi_decode( data, bytes_read, desc, channels );
-	QOI_FREE( data );
+	QIX_FREE( data );
 	return pixels;
 }
 
-#endif // QOI_NO_STDIO
-#endif // QOI_IMPLEMENTATION
+#endif // QIX_NO_STDIO
+#endif // QIX_IMPLEMENTATION

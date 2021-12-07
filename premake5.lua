@@ -41,7 +41,7 @@ includedirs { "libs/stb" }
 project "qoiconv"
 	language "C++"
 	kind "ConsoleApp"
-	files { "qoiconv.c", "qoi.h" }
+	files { "qoiconv.c", "qix.h" }
 
 	filter { "configurations:Debug" }
 
@@ -52,7 +52,7 @@ project "qoiconv"
 project "qoibench"
 	language "C++"
 	kind "ConsoleApp"
-	files { "qoibench.cpp", "qoi.h" }
+	files { "qoibench.cpp", "qix.h" }
 	links { "libpng16", "zlib" }
 
 	filter { "configurations:Debug" }

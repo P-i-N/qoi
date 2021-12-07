@@ -40,8 +40,8 @@ SOFTWARE.
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#define QOI_IMPLEMENTATION
-#include "qoi.h"
+#define QIX_IMPLEMENTATION
+#include "qix.h"
 
 
 #define STR_ENDS_WITH(S, E) (strcmp(S + strlen(S) - (sizeof(E)-1), E) == 0)
@@ -97,7 +97,7 @@ int main(int argc, char **argv) {
 			.width = w,
 			.height = h, 
 			.channels = channels,
-			.colorspace = QOI_SRGB
+			.colorspace = QIX_SRGB
 		});
 
 		// Try decoding as well...

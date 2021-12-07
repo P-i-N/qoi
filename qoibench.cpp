@@ -42,8 +42,8 @@ SOFTWARE.
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-#define QOI_IMPLEMENTATION
-#include "qoi.h"
+#define QIX_IMPLEMENTATION
+#include "qix.h"
 
 #include <filesystem>
 #include <memory>
@@ -407,7 +407,7 @@ benchmark_result_t benchmark_image( const char *path, int runs, benchmark_conf c
 		.width = ( unsigned int )w,
 		.height = ( unsigned int )h,
 		.channels = 4,
-		.colorspace = QOI_SRGB,
+		.colorspace = QIX_SRGB,
 		.mode = 0
 	};
 
@@ -489,7 +489,7 @@ benchmark_result_t benchmark_image( const char *path, int runs, benchmark_conf c
 				.width = ( unsigned int )w,
 				.height = ( unsigned int )h,
 				.channels = 4,
-				.colorspace = QOI_SRGB,
+				.colorspace = QIX_SRGB,
 				.mode = 0
 			};
 			void *enc_p = qoi_encode( pixels, &desc, &enc_size, NULL );
@@ -517,13 +517,13 @@ void benchmark_print_header( const char *head )
 	for ( int i = 0, S = 39 - ( int )strlen( buff ); i < S; ++i ) printf( " " );
 
 	printf(
-	    "|   index    diff_8    diff_16    run_8    diff_24    color  | size kB\n" );
+	    "|   index     LRU   diff_8  diff_16    run_8    diff_24    color  | size kB\n" );
 }
 
 void benchmark_print_separator()
 {
 	printf(
-	    "---------------------------------------+------------------------------------------------------------+--------\n" );
+	    "---------------------------------------+-----------------------------------------------------------------+--------\n" );
 }
 
 void benchmark_print_simple_result( const char *head, benchmark_result_t res )
@@ -538,8 +538,9 @@ void benchmark_print_simple_result( const char *head, benchmark_result_t res )
 	for ( int i = 0, S = 39 - ( int )strlen( buff ); i < S; ++i ) printf( " " );
 
 	printf(
-	    "|%8d  %8d   %8d %8d   %8d %8d  |%8d\n",
+	    "|%8d%8d %8d %8d %8d   %8d %8d  |%8d\n",
 	    ( int )res.stats.count_index,
+	    ( int )res.stats.count_lru,
 	    ( int )res.stats.count_diff_8,
 	    ( int )res.stats.count_diff_16,
 	    ( int )res.stats.count_run_8,
