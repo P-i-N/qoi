@@ -1,0 +1,1482 @@
+## images\kodak\kodim01.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       8.9       179.1         44.16          2.20       833
+stbi:         8.4       112.4         46.69          3.50      1047
+qoi:          4.1         5.5         96.81         71.18       909
+qix:          1.5         7.1        269.94         55.68       632
+
+## images\kodak\kodim02.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       9.8       230.1         40.13          1.71       678
+stbi:        10.8       118.0         36.42          3.33       966
+qoi:          3.7         5.2        107.58         75.95       706
+qix:          1.4         6.7        274.40         58.39       521
+
+## images\kodak\kodim03.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       8.2       209.2         47.99          1.88       598
+stbi:         6.6       108.8         59.88          3.61       850
+qoi:          3.7         5.0        106.94         78.43       594
+qix:          1.4         5.2        283.01         75.27       442
+
+## images\kodak\kodim04.png size: 512x768
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.0       216.9         39.22          1.81       701
+stbi:        10.9       113.8         36.13          3.45       989
+qoi:          3.7         5.4        107.70         73.10       763
+qix:          1.5         6.6        255.63         59.37       544
+
+## images\kodak\kodim05.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.4       182.4         37.64          2.16       878
+stbi:         9.3       115.1         42.47          3.42      1131
+qoi:          3.8         5.4        104.20         73.27       952
+qix:          1.9         7.2        207.20         54.73       707
+
+## images\kodak\kodim06.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       9.1       175.9         43.14          2.24       713
+stbi:         7.8       104.7         50.26          3.76       943
+qoi:          3.7         5.1        105.17         77.10       757
+qix:          1.5         6.6        265.61         60.02       569
+
+## images\kodak\kodim07.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      11.4       208.9         34.38          1.88       626
+stbi:        13.2       114.4         29.72          3.44       883
+qoi:          3.7         5.0        107.15         78.01       653
+qix:          1.7         5.7        227.45         68.48       506
+
+## images\kodak\kodim08.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      13.1       175.8         29.96          2.24       846
+stbi:        14.5       118.8         27.20          3.31      1095
+qoi:          3.8         5.3        102.34         73.99       987
+qix:          1.4         7.1        273.47         55.51       723
+
+## images\kodak\kodim09.png size: 512x768
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.0       214.2         39.48          1.84       629
+stbi:        11.2       111.7         35.13          3.52       908
+qoi:          3.6         5.3        110.33         74.09       669
+qix:          1.3         5.9        294.04         67.00       495
+
+## images\kodak\kodim10.png size: 512x768
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.4       215.7         37.95          1.82       643
+stbi:        11.7       113.7         33.62          3.46       922
+qoi:          3.5         5.2        112.58         75.18       704
+qix:          1.5         6.5        261.00         60.91       506
+
+## images\kodak\kodim11.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       8.8       175.7         44.57          2.24       687
+stbi:         8.0       106.3         48.98          3.70       930
+qoi:          3.5         5.1        111.68         77.72       736
+qix:          1.5         6.4        255.27         61.53       568
+
+## images\kodak\kodim12.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       8.5       215.1         46.33          1.83       620
+stbi:         7.2       110.8         54.57          3.55       889
+qoi:          3.7         5.1        107.39         76.70       614
+qix:          1.8         5.6        214.47         69.69       461
+
+## images\kodak\kodim13.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.6       159.1         37.13          2.47       969
+stbi:         9.3       107.8         42.33          3.65      1180
+qoi:          3.8         5.4        103.26         72.41      1064
+qix:          1.6         7.0        253.20         56.18       789
+
+## images\kodak\kodim14.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       9.7       188.7         40.45          2.08       796
+stbi:         8.6       113.8         45.48          3.46      1065
+qoi:          3.8         5.2        102.68         75.08       831
+qix:          1.8         6.9        223.86         57.03       613
+
+## images\kodak\kodim15.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       9.8       205.3         40.08          1.92       671
+stbi:        11.3       112.1         34.65          3.51       935
+qoi:          3.8         5.2        103.52         75.01       722
+qix:          1.8         5.7        221.61         69.23       522
+
+## images\kodak\kodim16.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       8.6       200.1         45.76          1.97       620
+stbi:         6.8       105.0         57.73          3.74       869
+qoi:          3.8         5.0        102.70         78.04       641
+qix:          1.3         6.1        292.51         64.65       479
+
+## images\kodak\kodim17.png size: 512x768
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       9.5       230.9         41.56          1.70       677
+stbi:         7.5       113.9         52.34          3.45       951
+qoi:          3.8         5.3        102.79         74.33       714
+qix:          1.7         6.7        232.87         58.26       518
+
+## images\kodak\kodim18.png size: 512x768
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.2       200.7         38.46          1.96       853
+stbi:        10.6       115.9         37.11          3.39      1151
+qoi:          3.8         5.4        102.83         73.02       944
+qix:          1.7         7.2        225.34         54.90       712
+
+## images\kodak\kodim19.png size: 512x768
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.6       228.7         37.19          1.72       729
+stbi:        10.8       115.8         36.49          3.40      1010
+qoi:          3.6         5.4        107.76         73.30       813
+qix:          1.4         6.7        274.04         58.76       588
+
+## images\kodak\kodim20.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       7.8       164.0         50.16          2.40       552
+stbi:         6.5        89.8         60.93          4.38       776
+qoi:          2.9         4.0        136.33         97.58       589
+qix:          1.8         5.2        222.48         76.21       470
+
+## images\kodak\kodim21.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       9.0       218.7         43.78          1.80       738
+stbi:         8.0       110.9         48.89          3.55      1005
+qoi:          3.6         5.6        108.51         70.54       761
+qix:          1.7         6.5        235.18         60.88       580
+
+## images\kodak\kodim22.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.3       214.9         38.15          1.83       770
+stbi:        12.3       117.7         31.92          3.34      1083
+qoi:          4.0         5.3         99.44         73.95       859
+qix:          1.7         7.7        235.77         51.19       658
+
+## images\kodak\kodim23.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       8.9       237.9         44.21          1.65       615
+stbi:         9.4       111.3         42.00          3.53       904
+qoi:          3.5         5.2        111.27         75.12       688
+qix:          1.6         6.2        253.51         63.25       517
+
+## images\kodak\kodim24.png size: 768x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      10.5       183.1         37.32          2.15       768
+stbi:        11.5       117.4         34.11          3.35      1011
+qoi:          3.8         5.2        103.96         75.03       839
+qix:          1.6         6.4        250.23         61.35       609
+
+## Total AVG size: 0x0
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       9.8       201.3         40.29          1.95       717
+stbi:         9.7       111.7         40.63          3.52       979
+qoi:          3.7         5.2        106.45         75.48       771
+qix:          1.6         6.4        247.65         60.98       572
+
+
+## images\screenshots\amazon.com.png size: 1313x6097
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      87.6      1094.2         91.37          7.32      4589
+stbi:        80.7      1027.6         99.21          7.79      6014
+qoi:         33.1        47.6        241.51        168.35      5382
+qix:         37.9        61.3        210.95        130.57      4103
+
+## images\screenshots\apple.com.png size: 1313x4755
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      44.0       568.0        142.00         10.99      1941
+stbi:        44.1       635.8        141.56          9.82      2575
+qoi:         18.1        26.4        345.12        236.68      2157
+qix:         25.1        35.3        248.44        176.82      1634
+
+## images\screenshots\cnn.com.png size: 1313x5241
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      48.3       614.6        142.42         11.20      2246
+stbi:        50.0       689.6        137.64          9.98      2729
+qoi:         19.8        28.5        348.43        241.84      2449
+qix:         34.6        40.3        199.06        170.89      1746
+
+## images\screenshots\duckduckgo.com.png size: 1313x2874
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      18.4       206.4        205.21         18.28       333
+stbi:        17.4       313.9        216.49         12.02       436
+qoi:          7.3        10.7        517.90        353.59       330
+qix:         15.3        14.8        246.32        254.77       244
+
+## images\screenshots\en.wikipedia.org.png size: 1313x2936
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      29.4       287.2        130.97         13.42      1342
+stbi:        25.2       373.1        152.79         10.33      1497
+qoi:         11.8        16.8        326.43        228.82      1547
+qix:         15.3        22.2        252.42        173.85      1029
+
+## images\screenshots\imdb.com.png size: 1313x6441
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      57.0       726.9        148.38         11.63      2264
+stbi:        58.1       847.4        145.66          9.98      3053
+qoi:         22.6        32.5        374.49        260.52      2541
+qix:         41.3        44.3        205.00        191.08      1977
+
+## images\screenshots\microsoft.com.png size: 1313x3328
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      39.0       483.3        112.15          9.04      1518
+stbi:        33.0       481.0        132.27          9.09      2030
+qoi:         13.9        19.9        315.26        219.98      1701
+qix:         20.6        26.6        212.05        164.43      1304
+
+## images\screenshots\news.ycombinator.com.png size: 1325x1450
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      12.2       108.2        157.31         17.76       289
+stbi:         9.3       167.4        205.70         11.48       333
+qoi:          4.1         5.9        470.77        324.72       288
+qix:          7.3         7.8        264.03        246.26       200
+
+## images\screenshots\nytimes.com.png size: 1313x5780
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      72.4       744.4        104.76         10.20      2672
+stbi:        51.5       801.9        147.41          9.46      3377
+qoi:         22.5        32.5        336.72        233.85      2820
+qix:         37.1        43.5        204.68        174.29      2046
+
+## images\screenshots\phoboslab.org.png size: 1313x20667
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     154.3      1925.8        175.86         14.09      6199
+stbi:       153.1      2289.0        177.23         11.85      7421
+qoi:         81.6       116.1        332.68        233.79      8337
+qix:        103.1       143.6        263.11        189.00      5946
+
+## images\screenshots\reddit.com.png size: 1313x8008
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      97.4      1010.9        107.95         10.40      2821
+stbi:        66.8      1100.5        157.47          9.55      3927
+qoi:         30.2        43.2        348.32        243.37      3083
+qix:         46.9        57.8        224.41        181.83      2382
+
+## images\screenshots\stripe.com.png size: 1313x6603
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      54.5       572.2        159.10         15.15      1054
+stbi:        44.9       775.0        193.21         11.19      1428
+qoi:         20.0        29.4        432.46        294.81      1386
+qix:         34.0        39.8        254.99        217.83      1146
+
+## images\screenshots\sublime.png size: 1008x9513
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      50.4       553.3        190.12         17.33      1579
+stbi:        48.4       836.2        197.94         11.47      1858
+qoi:         20.8        30.9        460.14        310.02      1538
+qix:         25.4        38.5        377.40        248.91       984
+
+## Total AVG size: 0x0
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      58.8       684.3        139.88         12.03      2219
+stbi:        52.5       795.3        156.77         10.35      2821
+qoi:         23.5        33.9        349.93        243.08      2582
+qix:         34.1        44.3        241.08        185.84      1903
+
+
+## images\textures\pk01_door01a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.5        82.3         29.20          1.59       254
+stbi:         4.6        41.7         28.32          3.15       387
+qoi:          1.4         1.9         93.73         69.60       274
+qix:          0.3         2.7        399.00         48.28       215
+
+## images\textures\pk01_door01b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.7        73.6         27.83          1.78       269
+stbi:         5.1        43.0         25.67          3.05       397
+qoi:          1.4         1.9         94.97         67.41       293
+qix:          0.5         2.8        250.33         46.35       229
+
+## images\textures\pk01_door01_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.1         7.1        117.34         18.37         8
+stbi:         0.8        11.2        167.03         11.69        13
+qoi:          0.3         0.4        421.45        360.19         5
+qix:          0.3         0.5        454.01        279.77         4
+
+## images\textures\pk01_door01_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.3        24.8         40.16          5.29        86
+stbi:         3.1        21.5         41.79          6.10       117
+qoi:          0.8         1.0        168.34        126.57       111
+qix:          0.4         1.4        294.35         96.86        94
+
+## images\textures\pk01_door01_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.0        36.3         43.58          3.61       139
+stbi:         2.9        19.1         45.80          6.88       181
+qoi:          1.0         0.9        131.28        148.02       127
+qix:          1.0         1.3        131.41        104.61       106
+
+## images\textures\pk01_floor01a_d.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       7.2       156.4         36.29          1.68       511
+stbi:         8.0        75.5         32.93          3.47       750
+qoi:          2.5         3.5        105.87         73.94       555
+qix:          0.9         5.4        286.18         48.48       380
+
+## images\textures\pk01_floor01b_d.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       7.6       115.4         34.35          2.27       580
+stbi:         7.8        81.4         33.59          3.22       848
+qoi:          2.8         3.6         95.09         73.25       652
+qix:          1.0         5.5        269.34         47.97       511
+
+## images\textures\pk01_floor01_local.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.3        40.9         60.81          6.42       170
+stbi:         4.4        33.8         59.50          7.75       241
+qoi:          2.0         2.8        132.60         93.27       421
+qix:          1.0         4.0        263.75         65.84       370
+
+## images\textures\pk01_floor01_s.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       5.6        84.3         46.45          3.11       356
+stbi:         5.4        40.9         48.79          6.42       444
+qoi:          1.7         1.8        158.08        142.67       298
+qix:          2.3         2.7        113.88         98.14       250
+
+## images\textures\pk01_floor02a_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.7        26.2         24.05          2.50       150
+stbi:         2.6        23.9         25.32          2.74       215
+qoi:          0.7         1.0         91.90         67.79       177
+qix:          0.2         1.3        320.00         48.73       132
+
+## images\textures\pk01_floor02b_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.4        25.8         27.42          2.54       160
+stbi:         2.7        23.1         24.14          2.84       217
+qoi:          0.7         1.0         94.88         65.55       183
+qix:          0.2         1.3        379.92         52.07       136
+
+## images\textures\pk01_floor02_local.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.2        25.2         30.00          2.61        98
+stbi:         2.3        17.9         28.50          3.67       135
+qoi:          0.7         0.9         97.22         73.88       128
+qix:          0.3         1.2        241.38         55.80       113
+
+## images\textures\pk01_floor02_s.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        22.0         39.75          2.97        88
+stbi:         1.6        10.8         40.90          6.06       115
+qoi:          0.5         0.5        136.22        133.77        85
+qix:          0.6         0.8        106.91         79.59        66
+
+## images\textures\pk01_gra_floor01_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.8        58.2         27.17          2.25       313
+stbi:         5.1        44.4         25.65          2.95       428
+qoi:          1.4         2.1         91.44         63.39       368
+qix:          0.4         2.7        366.33         48.29       274
+
+## images\textures\pk01_gra_floor01_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.5        31.4         37.60          4.17        93
+stbi:         3.4        23.2         38.27          5.66       140
+qoi:          1.0         1.5        125.90         88.96       167
+qix:          0.5         1.9        244.77         70.59       139
+
+## images\textures\pk01_gra_floor01_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.4        31.8         38.36          4.12       152
+stbi:         3.0        18.1         43.05          7.25       168
+qoi:          1.0         1.2        132.95        106.77       146
+qix:          0.8         1.2        169.13        108.85        92
+
+## images\textures\pk01_gra_floor02_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.3        33.4         28.29          1.96       144
+stbi:         2.5        23.7         26.04          2.76       196
+qoi:          0.7         0.9         98.23         70.34       169
+qix:          0.2         1.4        369.22         47.78       112
+
+## images\textures\pk01_gra_floor02_local.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.0        21.4         32.09          3.06        77
+stbi:         2.0        15.2         32.30          4.32       114
+qoi:          0.6         0.8        111.47         84.66       115
+qix:          0.1         1.2        457.65         54.51        93
+
+## images\textures\pk01_gra_floor02_s.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.7        22.0         39.30          2.97        92
+stbi:         1.7        11.2         39.18          5.83       115
+qoi:          0.5         0.5        121.12        119.68        90
+qix:          0.6         0.7        102.87         90.21        65
+
+## images\textures\pk01_panel01a_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.5        12.0         88.64         10.90        30
+stbi:         1.2        14.1        112.42          9.29        44
+qoi:          0.4         0.5        338.86        272.10        33
+qix:          0.4         0.7        322.44        192.72        27
+
+## images\textures\pk01_panel01a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.7        75.4         27.90          1.74       265
+stbi:         5.2        42.7         25.17          3.07       390
+qoi:          1.5         1.9         89.13         68.11       295
+qix:          0.5         2.8        260.17         46.47       231
+
+## images\textures\pk01_panel01b_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        12.0         81.77         10.90        32
+stbi:         1.5        14.5         84.82          9.02        46
+qoi:          0.4         0.5        329.00        260.63        33
+qix:          0.5         0.7        268.92        179.16        28
+
+## images\textures\pk01_panel01b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.4        68.5         30.02          1.91       280
+stbi:         4.8        44.3         27.32          2.96       409
+qoi:          1.4         1.9         93.78         69.23       314
+qix:          0.6         2.6        229.67         51.01       249
+
+## images\textures\pk01_panel01_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.6        21.5         50.74          6.09        62
+stbi:         2.4        18.3         55.46          7.15        85
+qoi:          0.7         0.9        197.37        138.38        90
+qix:          0.5         1.2        283.95        111.38        78
+
+## images\textures\pk01_panel01_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.5        36.7         36.97          3.57       134
+stbi:         4.4        20.0         29.85          6.55       184
+qoi:          1.3         1.1         97.95        122.25       139
+qix:          1.1         1.3        117.70         99.28       115
+
+## images\textures\pk01_panel02a_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        11.8         83.06         11.08        49
+stbi:         1.4        16.8         90.84          7.82        68
+qoi:          0.4         0.6        297.42        226.45        54
+qix:          0.5         0.7        261.41        196.66        46
+
+## images\textures\pk01_panel02_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.7        11.5         78.91         11.45        51
+stbi:         1.5        16.6         88.24          7.91        71
+qoi:          0.4         0.6        291.98        229.75        58
+qix:          0.5         0.7        281.88        189.60        48
+
+## images\textures\pk01_panel02_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.6        72.1         28.61          1.82       271
+stbi:         5.2        42.6         25.23          3.08       393
+qoi:          1.4         1.8         93.04         72.84       300
+qix:          0.3         2.7        426.67         48.83       233
+
+## images\textures\pk01_panel02_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.8        24.2         47.63          5.41        63
+stbi:         2.5        19.5         53.12          6.74        88
+qoi:          0.8         1.0        165.29        127.60        94
+qix:          0.8         1.3        174.11        102.84        83
+
+## images\textures\pk01_panel02_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.8        31.1         47.37          4.22       124
+stbi:         2.6        16.8         50.79          7.81       159
+qoi:          1.2         1.0        107.39        134.52       121
+qix:          1.1         1.1        123.92        121.25        88
+
+## images\textures\pk01_panel03a_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.7        12.1         77.38         10.86        55
+stbi:         1.6        17.4         81.25          7.53        76
+qoi:          0.4         0.6        291.85        229.87        59
+qix:          0.5         0.7        267.60        193.41        49
+
+## images\textures\pk01_panel03a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       5.5        66.6         24.01          1.97       277
+stbi:         5.4        44.1         24.43          2.97       408
+qoi:          1.3         1.9        104.51         70.29       307
+qix:          0.4         2.7        337.81         49.31       249
+
+## images\textures\pk01_panel03b_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        11.6         84.38         11.26        61
+stbi:         1.4        17.7         93.22          7.41        80
+qoi:          0.4         0.6        326.46        212.43        64
+qix:          0.6         0.7        236.42        190.57        54
+
+## images\textures\pk01_panel03b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.5        76.4         28.85          1.72       261
+stbi:         4.8        42.3         27.14          3.10       379
+qoi:          1.3         1.8        101.07         72.17       283
+qix:          0.4         2.5        322.84         52.70       218
+
+## images\textures\pk01_panel03_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.8        18.8         46.79          6.96        57
+stbi:         3.1        17.4         42.86          7.54        77
+qoi:          0.7         0.9        184.19        145.25        89
+qix:          0.5         1.1        254.41        119.59        78
+
+## images\textures\pk01_panel03_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.0        32.2         44.36          4.07       131
+stbi:         2.7        19.2         48.13          6.83       165
+qoi:          1.0         1.0        132.48        131.27       125
+qix:          0.9         1.1        138.98        117.26        96
+
+## images\textures\pk01_panel_small01_add.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.0         6.5         67.21         10.02        30
+stbi:         0.8         9.8         78.90          6.65        42
+qoi:          0.2         0.3        276.06        216.65        33
+qix:          0.3         0.4        233.72        163.47        29
+
+## images\textures\pk01_panel_small01_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        34.1         25.87          1.92       139
+stbi:         2.8        23.0         23.09          2.85       203
+qoi:          0.7         0.9         95.30         71.05       153
+qix:          0.3         1.3        241.21         49.36       122
+
+## images\textures\pk01_panel_small01_local.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.4         8.9         47.24          7.34        23
+stbi:         1.1         8.0         61.83          8.22        32
+qoi:          0.3         0.4        196.33        169.96        36
+qix:          0.3         0.6        224.44        118.77        34
+
+## images\textures\pk01_panel_small01_s.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        15.8         41.10          4.14        67
+stbi:         1.3         9.2         48.71          7.11        82
+qoi:          0.5         0.5        143.94        124.00        64
+qix:          0.4         0.7        150.59         96.68        48
+
+## images\textures\pk01_panel_small02_add.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       0.7         3.7         91.76         17.86         6
+stbi:         0.5         6.4        139.53         10.21        10
+qoi:          0.1         0.2        444.31        365.31         6
+qix:          0.2         0.3        370.68        261.10         5
+
+## images\textures\pk01_panel_small02_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.4        36.5         27.36          1.80       129
+stbi:         2.5        21.1         25.95          3.11       188
+qoi:          0.6         0.9        104.19         70.47       140
+qix:          0.2         1.3        353.29         52.14       104
+
+## images\textures\pk01_panel_small02_local.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.7        16.1         38.33          4.08        44
+stbi:         1.6        11.9         41.44          5.51        63
+qoi:          0.6         0.7        114.39         97.48        68
+qix:          0.4         0.8        173.51         84.43        61
+
+## images\textures\pk01_panel_small02_s.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        17.2         40.75          3.82        80
+stbi:         1.4         9.3         45.34          7.05        89
+qoi:          0.5         0.5        134.71        125.62        70
+qix:          0.5         0.7        138.29        100.73        49
+
+## images\textures\pk01_pan_floor01a_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.4        43.6         27.87          1.50       119
+stbi:         2.6        21.6         25.60          3.04       184
+qoi:          0.6         0.9        110.87         70.90       128
+qix:          0.3         1.3        258.42         49.58        97
+
+## images\textures\pk01_pan_floor01b_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        38.1         26.16          1.72       133
+stbi:         2.8        23.1         23.71          2.84       195
+qoi:          0.7         0.9         99.09         69.07       141
+qix:          0.2         1.4        322.04         48.24       108
+
+## images\textures\pk01_pan_floor01_local.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6         8.5         40.05          7.74        27
+stbi:         1.3         8.6         50.79          7.58        38
+qoi:          0.4         0.4        181.59        150.59        39
+qix:          0.3         0.5        247.31        124.45        31
+
+## images\textures\pk01_pan_floor01_s.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        17.5         41.06          3.75        68
+stbi:         1.5        10.0         42.29          6.56        88
+qoi:          0.4         0.4        158.18        162.90        60
+qix:          0.5         0.7        143.72         96.58        53
+
+## images\textures\pk01_pan_floor02a_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.6        31.1         25.06          2.10       145
+stbi:         2.3        22.4         28.62          2.92       205
+qoi:          0.7         0.9         90.22         71.71       165
+qix:          0.2         1.4        324.92         48.46       124
+
+## images\textures\pk01_pan_floor02b_d.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.8        42.4         36.40          1.55       119
+stbi:         1.8        20.2         35.73          3.25       184
+qoi:          0.6         0.9        116.05         74.66       131
+qix:          0.2         1.4        381.69         45.93        98
+
+## images\textures\pk01_pan_floor02_local.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.4        14.0         45.34          4.67        79
+stbi:         1.3        14.0         49.05          4.68       104
+qoi:          0.5         0.7        131.39         92.99       111
+qix:          0.2         1.0        327.35         65.36        90
+
+## images\textures\pk01_pan_floor02_s.png size: 256x256
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        19.6         41.92          3.35        94
+stbi:         1.4         9.8         48.18          6.72       105
+qoi:          0.4         0.5        163.96        122.80        73
+qix:          0.5         0.7        140.76         99.16        54
+
+## images\textures\pk01_pan_trim01_d.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        39.6         26.37          1.66       124
+stbi:         2.0        21.9         33.47          3.00       193
+qoi:          0.6         0.9        108.40         70.04       145
+qix:          0.2         1.4        325.89         46.83       111
+
+## images\textures\pk01_pan_trim01_local.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        15.0         41.11          4.37        43
+stbi:         1.4        11.2         45.37          5.86        61
+qoi:          0.5         0.7        125.69         95.87        72
+qix:          0.2         0.8        355.40         86.78        63
+
+## images\textures\pk01_pan_trim01_s.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.5        16.1         44.51          4.06        72
+stbi:         1.3         8.7         51.08          7.55        85
+qoi:          0.4         0.5        158.53        130.55        64
+qix:          0.4         0.5        160.35        131.47        45
+
+## images\textures\pk01_pan_wall01_d.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       6.8       144.3         38.63          1.82       514
+stbi:         7.6        81.7         34.71          3.21       805
+qoi:          2.6         3.6         99.36         72.90       600
+qix:          0.9         5.3        304.82         49.17       483
+
+## images\textures\pk01_pan_wall01_local.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.2        57.1         62.12          4.59       139
+stbi:         4.1        39.6         64.45          6.61       210
+qoi:          2.0         2.5        131.51        104.27       243
+qix:          1.1         2.8        230.76         94.18       218
+
+## images\textures\pk01_pan_wall02a1_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.5        85.3         37.85          1.54       224
+stbi:         3.4        38.4         38.30          3.41       342
+qoi:          1.2         1.8        109.36         71.90       224
+qix:          0.4         2.4        293.82         53.80       178
+
+## images\textures\pk01_pan_wall02a2_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.3        72.8         39.87          1.80       214
+stbi:         3.6        38.1         36.77          3.44       322
+qoi:          1.3         1.8        104.63         73.04       213
+qix:          0.5         2.2        282.85         59.39       177
+
+## images\textures\pk01_pan_wall02a_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.1        14.3         63.75          9.18        26
+stbi:         1.4        14.5         94.79          9.07        38
+qoi:          0.5         0.5        270.20        245.55        30
+qix:          0.4         0.8        334.97        167.76        35
+
+## images\textures\pk01_pan_wall02a_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.3        28.5         57.48          4.59       107
+stbi:         2.0        16.2         66.91          8.10       148
+qoi:          0.7         0.7        188.02        183.99        95
+qix:          0.8         1.0        156.73        128.69        90
+
+## images\textures\pk01_pan_wall02b1_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.1        79.3         32.25          1.65       226
+stbi:         4.6        39.3         28.71          3.34       343
+qoi:          1.2         2.0        107.30         66.96       237
+qix:          0.3         2.5        422.68         53.25       183
+
+## images\textures\pk01_pan_wall02b2_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.7        79.8         35.38          1.64       221
+stbi:         3.7        38.6         35.05          3.39       333
+qoi:          1.1         1.8        118.27         74.46       231
+qix:          0.3         2.4        439.40         54.73       180
+
+## images\textures\pk01_pan_wall02b_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        16.7         51.96          7.87        43
+stbi:         2.0        15.9         66.49          8.22        59
+qoi:          0.6         0.8        211.68        168.11        65
+qix:          0.4         0.9        310.23        140.29        58
+
+## images\textures\pk01_pan_wall02b_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        33.0         51.92          3.98       139
+stbi:         2.7        17.8         48.60          7.36       174
+qoi:          0.9         0.9        145.64        150.14       125
+qix:          0.9         1.3        151.76        103.48       102
+
+## images\textures\pk01_roof01_d.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       7.5       152.0         34.73          1.72       516
+stbi:         8.1        78.0         32.25          3.36       761
+qoi:          2.7         3.6         96.70         72.76       606
+qix:          0.9         5.1        294.81         51.17       433
+
+## images\textures\pk01_roof01_local.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.6        31.2         73.82          8.41        84
+stbi:         2.9        28.8         91.03          9.11       115
+qoi:          1.6         2.3        161.32        112.57       243
+qix:          1.2         2.1        221.16        122.93       179
+
+## images\textures\pk01_roof01_s.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       5.4        85.8         48.31          3.06       356
+stbi:         5.4        43.3         48.33          6.05       456
+qoi:          1.7         1.7        155.43        150.64       324
+qix:          2.4         2.8        110.20         94.31       262
+
+## images\textures\pk01_thin_wall01a_d.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.6        25.9         25.16          2.53       159
+stbi:         2.4        23.9         27.20          2.74       221
+qoi:          0.7         0.9         97.89         70.42       182
+qix:          0.2         1.2        330.99         54.85       141
+
+## images\textures\pk01_thin_wall01b_d.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.3        27.9         19.88          2.35       151
+stbi:         2.5        22.9         26.61          2.87       214
+qoi:          0.7         0.9         90.37         71.17       171
+qix:          0.2         1.3        366.53         51.57       133
+
+## images\textures\pk01_thin_wall01_local.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        15.5         40.15          4.24        63
+stbi:         1.5        13.9         42.52          4.71        87
+qoi:          0.5         0.7        126.84         96.58        95
+qix:          0.2         0.8        264.47         79.00        73
+
+## images\textures\pk01_thin_wall01_s.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.6        17.7         40.41          3.71        84
+stbi:         1.6        10.0         41.08          6.54        93
+qoi:          0.6         0.6        119.16        102.80        75
+qix:          0.4         0.6        149.87        104.47        49
+
+## images\textures\pk01_thin_wall02a_d.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        33.3         26.67          1.97       140
+stbi:         2.2        22.5         30.25          2.91       206
+qoi:          0.6         1.0        114.73         68.06       156
+qix:          0.2         1.3        417.96         49.80       121
+
+## images\textures\pk01_thin_wall02b_d.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.4        33.3         26.79          1.97       138
+stbi:         2.2        22.4         29.46          2.93       206
+qoi:          0.6         0.9        101.23         71.34       154
+qix:          0.2         1.3        267.60         50.42       123
+
+## images\textures\pk01_thin_wall02_local.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.4        13.3         48.50          4.92        32
+stbi:         1.2        10.1         53.08          6.50        48
+qoi:          0.4         0.5        149.39        131.02        52
+qix:          0.2         0.6        282.48        111.99        49
+
+## images\textures\pk01_thin_wall02_s.png size: 128x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.6        19.3         24.98          3.39        81
+stbi:         1.7        10.4         37.69          6.32        99
+qoi:          0.5         0.6        126.32        104.72        80
+qix:          0.5         0.6        138.00        102.87        53
+
+## images\textures\pk01_tile_floor01a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.7        78.7         35.49          1.67       247
+stbi:         3.9        42.4         33.27          3.09       387
+qoi:          1.4         1.9         96.14         70.43       278
+qix:          0.4         2.7        322.84         48.91       209
+
+## images\textures\pk01_tile_floor01b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.2        60.3         31.11          2.17       280
+stbi:         3.8        42.7         34.43          3.07       423
+qoi:          1.2         1.8        106.71         73.07       320
+qix:          0.4         2.8        357.05         46.39       243
+
+## images\textures\pk01_tile_floor01_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.7        26.0         78.30          5.04        53
+stbi:         1.6        18.3         82.32          7.18        82
+qoi:          0.8         1.1        156.58        121.76        87
+qix:          0.5         1.1        245.04        122.90        79
+
+## images\textures\pk01_tile_floor01_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.8        32.0         47.12          4.09       170
+stbi:         3.1        25.3         41.71          5.19       209
+qoi:          1.0         1.3        133.16        102.51       149
+qix:          0.7         1.1        191.91        120.13        81
+
+## images\textures\pk01_trims01a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.6        65.7         28.76          2.00       278
+stbi:         4.6        42.4         28.45          3.09       403
+qoi:          1.5         2.0         87.85         67.05       295
+qix:          0.5         2.7        242.41         48.91       240
+
+## images\textures\pk01_trims01b_add.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       1.1         7.2        117.02         18.20        11
+stbi:         0.7        11.9        190.76         11.06        15
+qoi:          0.3         0.4        421.45        355.88         8
+qix:          0.3         0.5        441.77        279.05         9
+
+## images\textures\pk01_trims01b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.5        72.8         29.44          1.80       266
+stbi:         4.5        41.6         29.24          3.15       385
+qoi:          1.2         1.9        110.08         70.05       279
+qix:          0.4         2.5        338.16         51.92       222
+
+## images\textures\pk01_trims01_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.8        25.5         46.00          5.14        83
+stbi:         2.5        21.1         51.73          6.21       114
+qoi:          0.7         1.1        192.27        121.75       112
+qix:          0.4         1.4        335.22         96.36       108
+
+## images\textures\pk01_trims01_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.6        37.0         50.70          3.54       153
+stbi:         2.4        18.9         54.77          6.94       192
+qoi:          1.0         1.0        134.14        128.60       144
+qix:          1.1         1.2        119.95        108.87       106
+
+## images\textures\pk01_trims01_spec.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.9        38.2         45.54          3.43       181
+stbi:         2.7        19.3         48.14          6.81       208
+qoi:          0.9         1.4        141.94         96.80       183
+qix:          0.9         1.4        142.94         92.99       119
+
+## images\textures\pk01_vent_wall01a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.4        72.1         29.90          1.82       267
+stbi:         4.6        44.5         28.50          2.95       395
+qoi:          1.2         1.9        110.02         69.76       291
+qix:          0.4         2.7        314.02         48.16       220
+
+## images\textures\pk01_vent_wall01b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.5        80.5         28.90          1.63       245
+stbi:         4.7        41.3         28.14          3.17       369
+qoi:          1.4         1.8         91.17         71.02       268
+qix:          0.5         2.6        285.00         50.71       195
+
+## images\textures\pk01_vent_wall01_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.3        14.9         56.74          8.82        39
+stbi:         1.9        13.4         69.32          9.78        54
+qoi:          0.6         0.8        202.18        154.77        67
+qix:          0.4         1.1        352.34        122.78        69
+
+## images\textures\pk01_vent_wall01_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.7        28.5         48.21          4.60       140
+stbi:         2.7        16.4         49.04          8.01       155
+qoi:          0.8         1.0        167.50        127.80       120
+qix:          0.9         1.1        148.41        117.01        86
+
+## images\textures\pk01_vent_wall02_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.8        72.3         27.58          1.81       269
+stbi:         5.0        42.8         26.44          3.06       400
+qoi:          1.1         1.8        114.05         73.55       285
+qix:          0.4         2.8        347.86         47.19       228
+
+## images\textures\pk01_vent_wall02_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        19.0         52.73          6.91        54
+stbi:         2.0        14.9         66.06          8.79        75
+qoi:          0.9         0.8        149.28        168.56        68
+qix:          0.4         1.0        339.39        132.21        68
+
+## images\textures\pk01_vent_wall02_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.1        19.0         63.23          6.92        91
+stbi:         1.9        12.6         67.60         10.41        99
+qoi:          0.7         0.6        188.59        207.39        68
+qix:          0.5         0.8        241.21        161.38        50
+
+## images\textures\pk01_vent_wall03_d.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       7.5       148.8         35.12          1.76       517
+stbi:         7.7        78.4         34.16          3.34       786
+qoi:          2.6         3.4        102.72         77.23       548
+qix:          0.8         5.6        316.33         46.92       460
+
+## images\textures\pk01_vent_wall03_local.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       5.5        27.0         47.99          9.72        68
+stbi:         3.7        28.8         71.18          9.10        94
+qoi:          0.9         1.2        294.84        213.98        79
+qix:          0.8         1.6        340.58        165.31        93
+
+## images\textures\pk01_vent_wall03_s.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.0        35.2         65.28          7.44       201
+stbi:         3.5        26.5         74.95          9.89       208
+qoi:          1.1         1.1        238.33        228.25       122
+qix:          1.4         1.6        181.96        162.44       116
+
+## images\textures\pk01_wall01_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.6        50.2         28.57          2.61       301
+stbi:         4.7        45.5         27.83          2.88       446
+qoi:          1.6         1.9         84.46         69.80       353
+qix:          0.5         2.6        273.75         51.31       281
+
+## images\textures\pk01_wall01_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.7        32.0         47.98          4.09        73
+stbi:         2.3        21.7         57.79          6.04       107
+qoi:          0.8         1.2        156.80        111.86       117
+qix:          0.6         1.4        209.95         95.63        99
+
+## images\textures\pk01_wall01_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.7        40.4         48.29          3.24       170
+stbi:         2.7        24.7         48.98          5.30       226
+qoi:          1.1         1.2        115.59        109.09       171
+qix:          0.6         1.4        207.52         92.30       122
+
+## images\textures\pk01_wall02a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.4        49.5         30.13          2.65       310
+stbi:         4.5        44.8         28.82          2.92       447
+qoi:          1.3         2.0        104.81         65.91       364
+qix:          0.5         2.5        284.69         52.20       280
+
+## images\textures\pk01_wall02b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.0        67.4         32.75          1.95       273
+stbi:         4.9        42.2         27.01          3.10       409
+qoi:          1.4         1.8         95.60         72.66       314
+qix:          0.4         2.6        339.65         50.63       245
+
+## images\textures\pk01_wall02_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.6        22.3         50.20          5.88        81
+stbi:         2.5        20.2         53.02          6.50       110
+qoi:          0.8         1.1        160.55        118.39       128
+qix:          0.5         1.2        290.75        106.05        95
+
+## images\textures\pk01_wall02_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.6        35.8         50.56          3.66       133
+stbi:         2.3        18.9         55.79          6.95       179
+qoi:          0.7         1.0        177.08        134.25       130
+qix:          1.1         1.2        117.32        112.77       100
+
+## images\textures\pk01_wall03a_d.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       7.2       139.9         36.28          1.87       533
+stbi:         7.7        81.7         34.26          3.21       794
+qoi:          2.5         4.5        104.86         58.84       577
+qix:          1.2         5.3        214.24         49.61       459
+
+## images\textures\pk01_wall03b_d.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       7.2       170.8         36.38          1.53       486
+stbi:         7.4        85.7         35.20          3.06       747
+qoi:          2.5         4.9        106.29         53.30       521
+qix:          1.0         8.1        261.33         32.27       410
+
+## images\textures\pk01_wall03_local.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.5        43.5         57.89          6.03        91
+stbi:         3.5        33.7         74.63          7.78       133
+qoi:          1.2         1.5        217.37        170.18       122
+qix:          1.2         1.9        224.32        137.59       124
+
+## images\textures\pk01_wall03_s.png size: 512x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       5.0        68.3         52.39          3.84       232
+stbi:         4.2        35.7         62.73          7.34       342
+qoi:          1.4         1.5        182.40        180.68       237
+qix:          2.3         2.4        116.16        108.23       226
+
+## images\textures\pk01_wall04a_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.0        63.6         32.53          2.06       286
+stbi:         4.5        43.2         29.13          3.03       419
+qoi:          1.3         1.8        100.13         73.06       330
+qix:          0.3         2.6        450.42         49.47       255
+
+## images\textures\pk01_wall04a_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.5        22.5         52.08          5.84        81
+stbi:         2.4        19.8         54.96          6.61       110
+qoi:          0.8         1.1        161.12        120.14       143
+qix:          0.4         1.3        321.65         99.21        94
+
+## images\textures\pk01_wall04a_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.2        41.5         40.90          3.16       150
+stbi:         2.8        22.0         47.11          5.97       208
+qoi:          1.0         0.9        136.93        140.91       151
+qix:          1.2         1.3        110.56         99.06       126
+
+## images\textures\pk01_wall04b_d.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       4.0        65.2         32.68          2.01       280
+stbi:         4.3        42.7         30.32          3.07       418
+qoi:          1.2         1.9        107.58         67.87       348
+qix:          0.3         2.6        420.10         51.02       269
+
+## images\textures\pk01_wall04b_local.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.3        19.8         57.04          6.62        66
+stbi:         2.0        18.2         66.06          7.21        90
+qoi:          0.9         1.2        147.45        110.80       160
+qix:          0.4         1.3        356.46         99.51        98
+
+## images\textures\pk01_wall04b_s.png size: 256x512
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       2.7        39.6         49.46          3.31       147
+stbi:         2.9        20.8         44.50          6.31       196
+qoi:          1.0         1.1        131.36        120.24       141
+qix:          1.1         1.2        123.52        107.78       115
+
+## Total AVG size: 0x0
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:       3.2        43.7         40.84          2.97       163
+stbi:         3.1        27.7         41.68          4.70       232
+qoi:          1.0         1.3        131.65         99.18       184
+qix:          0.6         1.8        224.96         73.52       145
+
+
+## images\wallpaper\1492858.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     111.6      2107.1         44.37          2.35      8037
+stbi:       124.3      1268.2         39.85          3.91     11014
+qoi:         44.8        61.6        110.52         80.40      8603
+qix:         24.3        77.9        203.78         63.60      6626
+
+## images\wallpaper\1492868.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     102.4      1743.7         48.37          2.84      4660
+stbi:       112.6      1029.4         43.98          4.81      6797
+qoi:         38.7        52.9        127.90         93.66      5448
+qix:         26.1        57.6        189.68         86.07      4282
+
+## images\wallpaper\1492869.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      68.9       863.1         71.87          5.74      2176
+stbi:        61.0       621.4         81.27          7.97      3039
+qoi:         25.1        33.8        197.18        146.73      2449
+qix:         25.8        34.3        192.19        144.33      1957
+
+## images\wallpaper\1492893.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     114.9      1920.5         43.11          2.58      8526
+stbi:       128.1      1240.3         38.66          3.99     11184
+qoi:         46.9        62.3        105.53         79.48      9301
+qix:         23.4        75.9        211.77         65.23      7249
+
+## images\wallpaper\car.png size: 3840x1600
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      97.2      1834.3         63.21          3.35      5454
+stbi:        86.8       971.7         70.80          6.32      9407
+qoi:         29.9        25.5        205.22        241.35      6096
+qix:         61.2        64.9        100.44         94.63      6033
+
+## images\wallpaper\EwZDbLoWQAEskRq.png size: 3840x2160
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     173.1      5860.1         47.92          1.42     12223
+stbi:       182.4      2354.2         45.46          3.52     19199
+qoi:         74.2       110.9        111.75         74.76     12869
+qix:         46.2       123.0        179.61         67.44     10123
+
+## images\wallpaper\fern_leaves_carved_124030_2560x1440.png size: 2560x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      77.5      1450.5         47.57          2.54      4528
+stbi:        84.2       822.2         43.80          4.48      6430
+qoi:         32.0        43.4        115.29         84.88      5238
+qix:         20.9        52.6        176.69         70.12      3895
+
+## images\wallpaper\fern_leaves_green_123899_2560x1440.png size: 2560x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      87.5      1490.6         42.15          2.47      4415
+stbi:       104.3       874.2         35.34          4.22      6381
+qoi:         31.4        43.0        117.55         85.72      5100
+qix:         19.4        50.9        190.33         72.37      4030
+
+## images\wallpaper\gradient-gaussian-blur-minimalism-abstract-18594.png size: 1920x1080
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      31.6       262.8         65.62          7.89       540
+stbi:        27.9       226.2         74.22          9.17       768
+qoi:          8.8        11.6        236.83        178.08       686
+qix:          9.7        11.6        214.61        179.43       620
+
+## images\wallpaper\Hy23XKX.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      99.6      3026.9         49.74          1.64      7378
+stbi:       101.5      1327.0         48.81          3.73     11093
+qoi:         44.8        64.3        110.52         77.03      7653
+qix:         23.5        77.1        210.72         64.24      5718
+
+## images\wallpaper\loneliness_14-wallpaper-3440x1440.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     121.7      2243.7         40.70          2.21      8479
+stbi:       148.4      1347.4         33.38          3.68     11821
+qoi:         44.1        62.8        112.22         78.90      8942
+qix:         21.1        81.0        234.99         61.14      7277
+
+## images\wallpaper\lukasz-szmigiel-8AdYB7M4OHY-unsplash.png size: 10000x2500
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     489.7      8053.4         51.05          3.10     32822
+stbi:       504.0      5229.8         49.60          4.78     44125
+qoi:        217.9       292.8        114.75         85.39     39241
+qix:        140.9       341.2        177.38         73.27     29439
+
+## images\wallpaper\manouchehr-hejazi-6F0wVthJqL0-unsplash.png size: 12249x4599
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:    1148.2      9310.3         49.06          6.05     24997
+stbi:      1119.9      8108.6         50.30          6.95     34348
+qoi:        306.6       412.5        183.75        136.58     30393
+qix:        306.1       458.0        184.05        123.00     24089
+
+## images\wallpaper\mecha.png size: 3840x1600
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      88.1      1641.6         69.76          3.74      4158
+stbi:        85.5       880.2         71.85          6.98      7109
+qoi:         36.9        34.2        166.66        179.41      6030
+qix:         54.5        66.9        112.80         91.80      5926
+
+## images\wallpaper\neon-gradient-minimalist_3840x2160.png size: 3840x2160
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     173.8      3104.9         47.73          2.67      6823
+stbi:       174.6      1715.2         47.50          4.84     10591
+qoi:         65.5        79.4        126.69        104.47      8310
+qix:         65.4        85.5        126.84         97.04      7530
+
+## images\wallpaper\rick-goltowski-WOg3r4AHa0U-unsplash.png size: 8078x2648
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     451.5      7583.1         47.38          2.82     17988
+stbi:       503.9      4408.7         42.45          4.85     27267
+qoi:        185.3       230.8        115.42         92.67     23049
+qix:        138.3       241.0        154.67         88.75     18979
+
+## images\wallpaper\Screenshot_2021-11-16_13-57-47.png size: 990x1142
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      23.8       380.6         47.47          2.97      2080
+stbi:        24.2       297.5         46.75          3.80      2837
+qoi:         10.5        14.4        107.43         78.59      2374
+qix:          7.5        16.6        149.89         68.13      1940
+
+## images\wallpaper\stripes-neon-flow_2732x2048.png size: 2732x2048
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     107.7      2691.3         51.97          2.08      8506
+stbi:       112.4      1446.9         49.78          3.87     12729
+qoi:         51.2        72.2        109.21         77.50     11282
+qix:         24.0        95.7        233.20         58.44      7917
+
+## images\wallpaper\v2osk-P_hTMaVlkzk-unsplash.png size: 8268x1960
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     347.7      6228.0         46.61          2.60     23722
+stbi:       377.0      3710.4         42.99          4.37     30628
+qoi:        137.6       183.0        117.76         88.56     25912
+qix:         98.0       223.9        165.29         72.37     19997
+
+## images\wallpaper\vibrant-colors-creamy-gradient-smooth-transition-abstract-41946.png size: 3000x3000
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     115.5      2601.9         77.93          3.46      5146
+stbi:       110.1      1506.3         81.71          5.97      7918
+qoi:         67.3        90.7        133.71         99.22      7131
+qix:         46.7        82.1        192.56        109.61      6505
+
+## images\wallpaper\wallpapersden.com_75733-7680x4320.png size: 7680x4320
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     586.8     19153.9         56.54          1.73     36133
+stbi:       553.3      8287.7         59.96          4.00     55855
+qoi:        281.6       381.9        117.84         86.88     37262
+qix:        154.4       421.3        214.87         78.76     29740
+
+## images\wallpaper\wp2437912-ultrawide-wallpapers.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     124.0      2179.4         39.96          2.27      8062
+stbi:       144.3      1308.5         34.33          3.79     10920
+qoi:         45.2        62.3        109.61         79.56      8906
+qix:         27.0        80.0        183.55         61.95      6820
+
+## images\wallpaper\wp2437939-ultrawide-wallpapers.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      38.3      1198.4        129.35          4.13      3054
+stbi:        31.0       757.9        159.62          6.54      4291
+qoi:         26.4        35.1        187.60        141.20      2369
+qix:         21.1        33.8        234.34        146.66      2120
+
+## images\wallpaper\wp2437941-ultrawide-wallpapers.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     107.2      1510.6         46.21          3.28      4391
+stbi:       116.2       965.2         42.64          5.13      6426
+qoi:         37.8        52.3        130.95         94.66      5611
+qix:         27.8        63.5        178.34         78.01      4415
+
+## images\wallpaper\wp2437951-ultrawide-wallpapers.png size: 2560x1080
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      62.2      1072.0         44.43          2.58      3063
+stbi:        68.1       617.5         40.58          4.48      4366
+qoi:         23.2        32.5        119.02         85.20      3764
+qix:         15.6        37.9        177.54         72.88      2920
+
+## images\wallpaper\wp2437961-ultrawide-wallpapers.png size: 2560x1080
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      28.8       749.2         96.10          3.69      3747
+stbi:        24.8       617.5        111.50          4.48      5092
+qoi:         22.0        28.1        125.49         98.54      3025
+qix:         10.6        27.9        259.65         99.27      2230
+
+## images\wallpaper\wp2437978-ultrawide-wallpapers.png size: 5120x2160
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     264.7      5162.4         41.78          2.14     12005
+stbi:       312.3      2823.6         35.41          3.92     17795
+qoi:        100.7       138.4        109.84         79.91     14960
+qix:         57.1       160.7        193.56         68.81     11582
+
+## images\wallpaper\wp2437995-ultrawide-wallpapers.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     110.0      1467.5         45.04          3.38      4309
+stbi:       122.3       934.8         40.50          5.30      6296
+qoi:         40.6        53.3        121.91         92.93      5792
+qix:         35.8        56.3        138.39         88.05      4530
+
+## images\wallpaper\wp2437997-ultrawide-wallpapers.png size: 3440x1440
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     125.1      2110.5         39.58          2.35      7241
+stbi:       149.0      1261.1         33.24          3.93     10221
+qoi:         44.5        58.2        111.30         85.06      8468
+qix:         30.1        78.2        164.76         63.33      6551
+
+## images\wallpaper\wp2438004-ultrawide-wallpapers.png size: 3840x1024
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:      73.8       861.9         53.25          4.56      2060
+stbi:        78.0       598.8         50.42          6.57      3032
+qoi:         26.6        36.7        147.67        107.14      2943
+qix:         28.3        35.6        139.00        110.52      2580
+
+## Total AVG size: 0x0
+-------------------------------------------------------------------
+        decode ms   encode ms   decode mpps   encode mpps   size kB
+libpng:     185.1      3328.8         50.64          2.82      9224
+stbi:       192.4      1918.6         48.71          4.88     13299
+qoi:         71.6        95.4        130.88         98.28     10640
+qix:         53.0       110.4        176.75         84.87      8454
+
+
+            |  qoi/qix kB |  %
+------------+-------------+-----
+kodak       |  771 /  572 | 34%
+screenshots | 2582 / 1903 | 35%
+textures    |  184 /  145 | 26%
+wallpaper   |10640 / 8454 | 25%

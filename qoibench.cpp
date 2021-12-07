@@ -526,6 +526,7 @@ benchmark_result_t benchmark_image( const char *path, int runs, benchmark_conf c
 			res.qoi.size = enc_size;
 			free( enc_p );
 		} );
+		/* */
 
 		BENCHMARK_FN( abs( runs ), res.qix.encode_time,
 		{
@@ -604,7 +605,7 @@ void benchmark_print_result( const char *head, benchmark_result_t res, int runs 
 	printf(
 	    "-------------------------------------------------------------------\n" );
 
-	printf( "        decode ms   encode ms   decode mpps   encode mpps   size kb\n" );
+	printf( "        decode ms   encode ms   decode mpps   encode mpps   size kB\n" );
 
 	if ( runs > 0 )
 	{
