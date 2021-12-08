@@ -40,7 +40,7 @@ typedef struct
 {
 	unsigned int count_hash_bucket[QIX_COLOR_CACHE_SIZE];
 	unsigned int count_index;
-	unsigned int count_lru;
+	unsigned int count_index2;
 	unsigned int count_diff_8;
 	unsigned int count_diff_16;
 	unsigned int count_run_8;
@@ -132,7 +132,7 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels );
 #define QIX_MASK_6  0b11111100
 
 #define QIX_COLOR_HASH(C) ( ( (C).rgba.r * 37 + (C).rgba.g ) * 37 + (C).rgba.b )
-#define QIX_COLOR_HASH2(C) ( ( ( (C).rgba.b * 37 + (C).rgba.g ) * 37 + (C).rgba.r ) * 37 )
+#define QIX_COLOR_HASH2(rgb) (((rgb & 0xFF) * 37 + ((rgb >> 8) & 0xFF)) * 37 + ((rgb >> 16) & 0xFF))
 #define QIX_MAGIC \
 	(((unsigned int)'q') << 24 | ((unsigned int)'i') << 16 | \
 	 ((unsigned int)'x') <<  8 | ((unsigned int)'f'))
@@ -144,7 +144,7 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels );
 
 #define QIX_SEGMENT_SIZE 16
 #define QIX_SEPARATE_COLUMNS
-//#define QIX_STATS(N) stats->N++
+#define QIX_STATS(N) stats->N++
 
 #ifndef QIX_STATS
 	#define QIX_STATS(N)
@@ -159,6 +159,12 @@ typedef union
 	    struct { unsigned char r, g, b, a; } rgba;
 	    unsigned int v;
 	} qix_rgba_t;
+
+typedef struct
+{
+	unsigned int rgb;
+	int y, u, v;
+} qix_rgb_yuv;
 
 void qix_write_32( unsigned char *bytes, size_t *p, unsigned int v )
 {
@@ -177,16 +183,26 @@ unsigned int qix_read_32( const unsigned char *bytes, size_t *p )
 	return ( a << 24 ) | ( b << 16 ) | ( c << 8 ) | d;
 }
 
-void qix_rgb2yuv( const qix_rgba_t *src, qix_rgba_t *dst )
+void qix_rgb2yuv( qix_rgb_yuv *pix )
 {
-	int Co = ( ( ( int )src->rgba.r ) - ( ( int )src->rgba.b ) ) / 2 + 128;
-	int tmp = ( ( int )src->rgba.b ) + ( Co - 128 ) / 2;
-	int Cg = ( ( ( int )src->rgba.g ) - tmp ) / 2 + 128;
-	int Y = tmp + ( Cg - 128 );
+	int r = pix->rgb & 0xFF;
+	int g = ( pix->rgb >> 8 ) & 0xFF;
+	int b = ( pix->rgb >> 16 ) & 0xFF;
 
-	dst->rgba.r = Y;
-	dst->rgba.g = Co;
-	dst->rgba.b = Cg;
+	pix->u = r - b;
+	int tmp = b + pix->u / 2;
+	pix->v = g - tmp;
+	pix->y = tmp + pix->v / 2;
+}
+
+void qix_yuv2rgb( qix_rgb_yuv *pix )
+{
+	int tmp = pix->y - pix->v / 2;
+	int g = pix->v + tmp;
+	int b = tmp - pix->u / 2;
+	int r = b + pix->u;
+
+	pix->rgb = r | ( g << 8 ) | ( b << 16 );
 }
 
 typedef struct
@@ -247,25 +263,22 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 	memset( stats, 0, sizeof( stats_t ) );
 
-	qix_rgba_t index[QIX_COLOR_CACHE_SIZE] = { 0 };
-	qix_rgba_t index2[QIX_COLOR_CACHE2_SIZE] = { 0 };
-
 	int run = 0, index_pos = 0;
-	qix_rgba_t px = { .rgba = { .r = 0, .g = 0, .b = 0, .a = 0 } };
-	qix_rgba_t pxYUV = px;
-	qix_rgba_t pxPrevYUV = px;
+
+	qix_rgb_yuv index[QIX_COLOR_CACHE_SIZE] = { 0 };
+	unsigned int index2[QIX_COLOR_CACHE2_SIZE] = { 0 };
+	qix_rgb_yuv px = { 0 };
+	qix_rgb_yuv pxPrev = { 0 };
 
 	unsigned char *bytes = ( unsigned char * )dst;
 
 	while ( numSrcPixels-- )
 	{
-		index2[index_pos] = pxYUV;
+		index2[index_pos] = px.rgb;
 
-		bool sameAsPrev = px.v == src[0];
+		px.rgb = ( *src++ ) & 0xFFFFFFu;
+		bool sameAsPrev = px.rgb == pxPrev.rgb;
 		bool flushRun = false;
-		bool encodeColor = false;
-
-		px.v = *src++;
 
 		if ( sameAsPrev )
 		{
@@ -306,27 +319,31 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 				continue;
 		}
 
-		pxPrevYUV = pxYUV;
-		qix_rgb2yuv( &px, &pxYUV );
+		pxPrev = px;
 
-		index_pos = QIX_COLOR_HASH( pxYUV ) % QIX_COLOR_CACHE2_SIZE;
+		index_pos = QIX_COLOR_HASH2( px.rgb ) % QIX_COLOR_CACHE2_SIZE;
 		QIX_STATS( count_hash_bucket[index_pos % QIX_COLOR_CACHE_SIZE] );
 
-		if ( index[index_pos % QIX_COLOR_CACHE_SIZE].v == pxYUV.v )
+		if ( index[index_pos % QIX_COLOR_CACHE_SIZE].rgb == px.rgb )
 		{
 			*bytes++ = index_pos % QIX_COLOR_CACHE_SIZE;
 			QIX_STATS( count_index );
+
+			px = index[index_pos % QIX_COLOR_CACHE_SIZE];
 			continue;
 		}
 
-		index[index_pos % QIX_COLOR_CACHE_SIZE] = pxYUV;
+		qix_rgb2yuv( &px );
+		index[index_pos % QIX_COLOR_CACHE_SIZE] = px;
 
-		int vg = pxYUV.rgba.g - pxPrevYUV.rgba.g;
-		int vb = pxYUV.rgba.b - pxPrevYUV.rgba.b;
+		int vg = ( px.u - pxPrev.u );
+		int vb = ( px.v - pxPrev.v );
+
+		bool encodeColor = false;
 
 		if ( QIX_RANGE( vg, 32 ) && QIX_RANGE( vb, 32 ) )
 		{
-			int vr = pxYUV.rgba.r - pxPrevYUV.rgba.r;
+			int vr = px.y - pxPrev.y;
 
 			if ( QIX_RANGE_EX( vr, 3 ) && QIX_RANGE_EX( vg, 1 ) && QIX_RANGE_EX( vb, 1 ) )
 			{
@@ -337,20 +354,21 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 			else if ( vg == 0 && vb == 0 )
 			{
 				*bytes++ = QIX_COLOR_Y;
-				*bytes++ = pxYUV.rgba.r;
+				*bytes++ = px.y;
 				QIX_STATS( count_diff_16 );
 			}
-			else if ( pxYUV.rgba.g == 128 && pxYUV.rgba.b == 128 )
+			else if ( px.u == 0 && px.v == 0 )
 			{
 				*bytes++ = QIX_COLOR_BW;
-				*bytes++ = pxYUV.rgba.r;
+				*bytes++ = px.y;
 				QIX_STATS( count_diff_16 );
 			}
-			else if ( index2[index_pos].v == pxYUV.v )
+			else if ( index2[index_pos] == px.rgb )
 			{
-				*bytes++ = index_pos;
-				*bytes++ = index_pos;
-				QIX_STATS( count_index );
+				unsigned int value = ( QIX_INDEX_16 << 8 ) | ( index_pos );
+				*bytes++ = ( unsigned char )( value >> 8 );
+				*bytes++ = ( unsigned char )( value );
+				QIX_STATS( count_index2 );
 			}
 			else if ( QIX_RANGE( vr, 8 ) && QIX_RANGE( vg, 8 ) && QIX_RANGE( vb, 8 ) )
 			{
@@ -380,27 +398,27 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 		if ( encodeColor )
 		{
-			if ( pxYUV.rgba.g == 128 && pxYUV.rgba.b == 128 )
+			if ( px.u == 0 && px.v == 0 )
 			{
 				*bytes++ = QIX_COLOR_BW;
-				*bytes++ = pxYUV.rgba.r;
+				*bytes++ = px.y;
 				QIX_STATS( count_diff_16 );
 			}
 			else
 			{
-				if ( index2[index_pos].v == pxYUV.v )
+				if ( index2[index_pos] == px.rgb )
 				{
 					unsigned int value = ( QIX_INDEX_16 << 8 ) | ( index_pos );
 					*bytes++ = ( unsigned char )( value >> 8 );
 					*bytes++ = ( unsigned char )( value );
-					QIX_STATS( count_index );
+					QIX_STATS( count_index2 );
 				}
 				else
 				{
 					*bytes++ = QIX_COLOR;
-					*bytes++ = pxYUV.rgba.r;
-					*bytes++ = pxYUV.rgba.g;
-					*bytes++ = pxYUV.rgba.b;
+					*bytes++ = ( unsigned char )( px.rgb );
+					*bytes++ = ( unsigned char )( px.rgb >> 8 );
+					*bytes++ = ( unsigned char )( px.rgb >> 16 );
 					QIX_STATS( count_color );
 				}
 			}
@@ -466,7 +484,7 @@ void *qix_encode( const void *data, const qix_desc *desc, int *out_len, stats_t 
 		p += qix_encode_rgb( src, sizeX * img.height, bytes + p, &column_stats );
 
 		stats->count_index += column_stats.count_index;
-		stats->count_lru += column_stats.count_lru;
+		stats->count_index2 += column_stats.count_index2;
 		stats->count_diff_8 += column_stats.count_diff_8;
 		stats->count_diff_16 += column_stats.count_diff_16;
 		stats->count_run_8 += column_stats.count_run_8;
@@ -625,17 +643,17 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 						px.rgba.b += ( b1 & 0x3f ) - 32;
 						QIX_SAVE_COLOR( px );
 					}
-					else if ( ( b1 & QIX_MASK_5 ) == QIX_COLOR )
+					else if ( ( b1 & QIX_MASK_6 ) == QIX_INDEX_16 )
+					{
+						b1 = ( b1 << 8 ) + bytes[p++];
+						px.v = index2[b1 & 0x3ff].v;
+					}
+					else if ( b1 == QIX_COLOR )
 					{
 						px.rgba.r = bytes[p++];
 						px.rgba.g = bytes[p++];
 						px.rgba.b = bytes[p++];
 						QIX_SAVE_COLOR( px );
-					}
-					else if ( ( b1 & QIX_MASK_6 ) == QIX_INDEX_16 )
-					{
-						b1 = ( b1 << 8 ) + bytes[p++];
-						px.v = index2[b1 & 0x3ff].v;
 					}
 
 					int tmp = ( int )px.rgba.r - ( ( int )px.rgba.b - 128 );

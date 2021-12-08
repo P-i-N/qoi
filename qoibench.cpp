@@ -563,7 +563,7 @@ void benchmark_print_header( const char *head )
 	for ( int i = 0, S = 39 - ( int )strlen( buff ); i < S; ++i ) printf( " " );
 
 	printf(
-	    "|   index     LRU  diff_8 diff_16   run_8 diff_24   color |  qoi/qix kB |  %%\n" );
+	    "|   index  index2  diff_8 diff_16   run_8 diff_24   color |  qoi/qix kB |  %%\n" );
 }
 
 void benchmark_print_separator()
@@ -586,7 +586,7 @@ void benchmark_print_simple_result( const char *head, benchmark_result_t res )
 	printf(
 	    "|%8d%8d%8d%8d%8d%8d%8d |%5d /%5d |%3d%%\n",
 	    ( int )res.stats.count_index,
-	    ( int )res.stats.count_lru,
+	    ( int )res.stats.count_index2,
 	    ( int )res.stats.count_diff_8,
 	    ( int )res.stats.count_diff_16,
 	    ( int )res.stats.count_run_8,
