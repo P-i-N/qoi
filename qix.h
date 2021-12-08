@@ -129,6 +129,7 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels );
 #define QIX_MASK_3  0b11100000
 #define QIX_MASK_4  0b11110000
 #define QIX_MASK_5  0b11111000
+#define QIX_MASK_6  0b11111100
 
 #define QIX_COLOR_HASH(C) ( ( (C).rgba.r * 37 + (C).rgba.g ) * 37 + (C).rgba.b )
 #define QIX_COLOR_HASH2(C) ( ( ( (C).rgba.b * 37 + (C).rgba.g ) * 37 + (C).rgba.r ) * 37 )
@@ -149,7 +150,9 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels );
 	#define QIX_STATS(N)
 #endif
 
-#define QIX_SAVE_COLOR(C) index[QIX_COLOR_HASH(C) % QIX_COLOR_CACHE_SIZE] = C
+#define QIX_SAVE_COLOR(C) \
+	index[QIX_COLOR_HASH(C) % QIX_COLOR_CACHE_SIZE] = C; \
+	index2[QIX_COLOR_HASH(C) % QIX_COLOR_CACHE2_SIZE] = C \
 
 typedef union
 	{
@@ -200,7 +203,7 @@ unsigned int *qix_zigzag_columns( const void *data, const image_t *image )
 {
 	unsigned int *result = ( unsigned int * )malloc( image->width * image->height * 4 );
 
-	if ( image->channels == 4 )
+	if ( result && image->channels == 4 )
 	{
 		unsigned int *dst = result;
 
@@ -248,7 +251,7 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 	qix_rgba_t index2[QIX_COLOR_CACHE2_SIZE] = { 0 };
 
 	int run = 0, index_pos = 0;
-	qix_rgba_t px = { .rgba = {.r = 0, .g = 0, .b = 0, .a = 0 } };
+	qix_rgba_t px = { .rgba = { .r = 0, .g = 0, .b = 0, .a = 0 } };
 	qix_rgba_t pxYUV = px;
 	qix_rgba_t pxPrevYUV = px;
 
@@ -327,6 +330,7 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 			if ( QIX_RANGE_EX( vr, 3 ) && QIX_RANGE_EX( vg, 1 ) && QIX_RANGE_EX( vb, 1 ) )
 			{
+				// Y range <-3; +3>; U range <-1; +1>; V range <-1; +1>
 				*bytes++ = QIX_DIFF_8 | ( 9 * ( vr + 3 ) + 3 * ( vg + 1 ) + ( vb + 1 ) );
 				QIX_STATS( count_diff_8 );
 			}
@@ -386,8 +390,9 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 			{
 				if ( index2[index_pos].v == pxYUV.v )
 				{
-					*bytes++ = index_pos;
-					*bytes++ = index_pos;
+					unsigned int value = ( QIX_INDEX_16 << 8 ) | ( index_pos );
+					*bytes++ = ( unsigned char )( value >> 8 );
+					*bytes++ = ( unsigned char )( value );
 					QIX_STATS( count_index );
 				}
 				else
@@ -479,6 +484,7 @@ void *qix_encode( const void *data, const qix_desc *desc, int *out_len, stats_t 
 	return bytes;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 {
 	if (
@@ -520,12 +526,12 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 		return NULL;
 	}
 
-	qix_rgba_t px = {.rgba = {.r = 0, .g = 0, .b = 0, .a = 255}};
+	qix_rgba_t px = {.rgba = {.r = 0, .g = 0, .b = 0, .a = 0}};
 	qix_rgba_t index[QIX_COLOR_CACHE_SIZE] = { 0 };
+	qix_rgba_t index2[QIX_COLOR_CACHE2_SIZE] = { 0 };
 	qix_rgba_t pxRGB = { 0 };
 
 	int run = 0;
-	int mode = 0;
 	int chunks_len = size - QIX_PADDING;
 
 	int chunks_x_count = desc->width / QIX_SEGMENT_SIZE;
@@ -540,14 +546,14 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 
 #ifdef QIX_SEPARATE_COLUMNS
 		memset( index, 0, sizeof( qix_rgba_t ) * QIX_COLOR_CACHE_SIZE );
+		memset( index2, 0, sizeof( qix_rgba_t ) * QIX_COLOR_CACHE2_SIZE );
 		run = 0;
 		px.rgba.r = 0;
 		px.rgba.g = 0;
 		px.rgba.b = 0;
-		px.rgba.a = 255;
+		px.rgba.a = 0;
 		pxRGB = px;
 		pxRGB.rgba.a = 0;
-		mode = 0;
 #endif
 
 		int px_chunk_pos = chunk_x * QIX_SEGMENT_SIZE;
@@ -561,11 +567,23 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 				{
 					run--;
 				}
-				else if ( p < chunks_len )
+				else
 				{
 					int b1 = bytes[p++];
 
-					if ( ( b1 & QIX_MASK_1 ) == QIX_INDEX )
+					if ( b1 == QIX_COLOR_Y )
+					{
+						px.rgba.r = bytes[p++];
+						QIX_SAVE_COLOR( px );
+					}
+					else if ( b1 == QIX_COLOR_BW )
+					{
+						px.rgba.r = bytes[p++];
+						px.rgba.g = 128;
+						px.rgba.b = 128;
+						QIX_SAVE_COLOR( px );
+					}
+					else if ( ( b1 & QIX_MASK_1 ) == QIX_INDEX )
 					{
 						px = index[b1];
 					}
@@ -582,29 +600,18 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 					}
 					else if ( ( b1 & QIX_MASK_2 ) == QIX_DIFF_8 )
 					{
-						px.rgba.r += ( ( b1 >> 4 ) & 0x03 ) - 2;
-						px.rgba.g += ( ( b1 >> 2 ) & 0x03 ) - 2;
-						px.rgba.b += ( b1 & 0x03 ) - 2;
+						int value = b1 & ~QIX_MASK_2;
+						px.rgba.r += ( value / 9 ) - 3;
+						px.rgba.g += ( ( value / 3 ) % 3 ) - 1;
+						px.rgba.b += ( value % 3 ) - 1;
 						QIX_SAVE_COLOR( px );
 					}
 					else if ( ( b1 & QIX_MASK_4 ) == QIX_DIFF_16 )
 					{
 						b1 = ( b1 << 8 ) + bytes[p++];
-
-						if ( mode == 0 )
-						{
-							px.rgba.r += ( ( b1 >> 8 ) & 0x0f ) - 8;
-							px.rgba.g += ( ( b1 >> 4 ) & 0x0f ) - 8;
-							px.rgba.b += ( b1 & 0x0f ) - 8;
-						}
-						else
-						{
-							px.rgba.r += ( ( b1 >> 8 ) & 0x0f ) - 8;
-							px.rgba.g += ( ( b1 >> 4 ) & 0x0f ) - 8;
-							px.rgba.b += ( b1 & 0x0f ) - 8;
-							px.rgba.a += ( ( b1 >> 12 ) & 0x03 ) - 2;
-						}
-
+						px.rgba.r += ( ( b1 >> 8 ) & 0x0f ) - 8;
+						px.rgba.g += ( ( b1 >> 4 ) & 0x0f ) - 8;
+						px.rgba.b += ( b1 & 0x0f ) - 8;
 						QIX_SAVE_COLOR( px );
 					}
 					else if ( ( b1 & QIX_MASK_5 ) == QIX_DIFF_24 )
@@ -613,20 +620,9 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 						b1 |= bytes[p++] << 8;
 						b1 |= bytes[p++];
 
-						if ( mode == 0 )
-						{
-							px.rgba.r += ( ( b1 >> 12 ) & 0x7f ) - 64;
-							px.rgba.g += ( ( b1 >> 6 ) & 0x3f ) - 32;
-							px.rgba.b += ( b1 & 0x3f ) - 32;
-						}
-						else
-						{
-							px.rgba.r += ( ( b1 >> 10 ) & 0x1f ) - 16;
-							px.rgba.g += ( ( b1 >> 5 ) & 0x1f ) - 16;
-							px.rgba.b += ( b1 & 0x1f ) - 16;
-							px.rgba.a += ( ( b1 >> 15 ) & 0x1f ) - 16;
-						}
-
+						px.rgba.r += ( ( b1 >> 12 ) & 0x7f ) - 64;
+						px.rgba.g += ( ( b1 >> 6 ) & 0x3f ) - 32;
+						px.rgba.b += ( b1 & 0x3f ) - 32;
 						QIX_SAVE_COLOR( px );
 					}
 					else if ( ( b1 & QIX_MASK_5 ) == QIX_COLOR )
@@ -636,12 +632,17 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels )
 						px.rgba.b = bytes[p++];
 						QIX_SAVE_COLOR( px );
 					}
+					else if ( ( b1 & QIX_MASK_6 ) == QIX_INDEX_16 )
+					{
+						b1 = ( b1 << 8 ) + bytes[p++];
+						px.v = index2[b1 & 0x3ff].v;
+					}
 
 					int tmp = ( int )px.rgba.r - ( ( int )px.rgba.b - 128 );
 					pxRGB.rgba.g = 2 * ( ( int )px.rgba.b - 128 ) + tmp;
 					pxRGB.rgba.b = tmp - ( ( int )px.rgba.g - 128 ) / 2;
 					pxRGB.rgba.r = pxRGB.rgba.b + 2 * ( ( int )px.rgba.g - 128 );
-					pxRGB.rgba.a = px.rgba.a;
+					pxRGB.rgba.a = 255;
 				}
 
 				if ( channels == 4 )

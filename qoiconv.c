@@ -66,25 +66,13 @@ int main( int argc, char **argv )
 	{
 		pixels = ( void * )stbi_load( argv[1], &w, &h, &channels, 0 );
 	}
-	else if ( STR_ENDS_WITH( argv[1], ".qoi" ) )
+	else if ( STR_ENDS_WITH( argv[1], ".qix" ) )
 	{
 		qix_desc desc;
 		pixels = qix_read( argv[1], &desc, 0 );
 		channels = desc.channels;
 		w = desc.width;
 		h = desc.height;
-	}
-
-	if ( channels == 4 )
-	{
-		unsigned char *px_ptr = ( unsigned char * )pixels;
-		for ( int i = 0, S = w * h; i < S; ++i, px_ptr += 4 )
-		{
-			px_ptr[0] = px_ptr[3];
-			px_ptr[1] = px_ptr[3];
-			px_ptr[2] = px_ptr[3];
-			px_ptr[3] = 255;
-		}
 	}
 
 	if ( pixels == NULL )
@@ -100,7 +88,7 @@ int main( int argc, char **argv )
 	{
 		encoded = stbi_write_png( argv[2], w, h, channels, pixels, 0 );
 	}
-	else if ( STR_ENDS_WITH( argv[2], ".qoi" ) )
+	else if ( STR_ENDS_WITH( argv[2], ".qix" ) )
 	{
 		encoded = qix_write( argv[2], pixels, &( qix_desc )
 		{
