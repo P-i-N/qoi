@@ -144,7 +144,7 @@ void *qix_decode( const void *data, int size, qix_desc *desc, int channels );
 
 #define QIX_SEGMENT_SIZE 16
 #define QIX_SEPARATE_COLUMNS
-#define QIX_STATS(N) stats->N++
+//#define QIX_STATS(N) stats->N++
 
 #ifndef QIX_STATS
 	#define QIX_STATS(N)
@@ -263,9 +263,9 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 	memset( stats, 0, sizeof( stats_t ) );
 
-	int run = 0, index_pos = 0;
+	int run = 0;
 
-	qix_rgb_yuv index[QIX_COLOR_CACHE_SIZE] = { 0 };
+	unsigned int index[QIX_COLOR_CACHE_SIZE] = { 0 };
 	unsigned int index2[QIX_COLOR_CACHE2_SIZE] = { 0 };
 	qix_rgb_yuv px = { 0 };
 	qix_rgb_yuv pxPrev = { 0 };
@@ -274,8 +274,7 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 
 	while ( numSrcPixels-- )
 	{
-		index2[index_pos] = px.rgb;
-
+		pxPrev = px;
 		px.rgb = ( *src++ ) & 0xFFFFFFu;
 		bool sameAsPrev = px.rgb == pxPrev.rgb;
 		bool flushRun = false;
@@ -319,22 +318,21 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 				continue;
 		}
 
-		pxPrev = px;
+		qix_rgb2yuv( &px );
 
-		index_pos = QIX_COLOR_HASH2( px.rgb ) % QIX_COLOR_CACHE2_SIZE;
-		QIX_STATS( count_hash_bucket[index_pos % QIX_COLOR_CACHE_SIZE] );
+		int index_pos2 = QIX_COLOR_HASH2( px.rgb ) % QIX_COLOR_CACHE2_SIZE;
+		int index_pos = index_pos2 % QIX_COLOR_CACHE_SIZE;
+		QIX_STATS( count_hash_bucket[index_pos] );
 
-		if ( index[index_pos % QIX_COLOR_CACHE_SIZE].rgb == px.rgb )
+		if ( index[index_pos] == px.rgb )
 		{
-			*bytes++ = index_pos % QIX_COLOR_CACHE_SIZE;
+			index2[index_pos2] = px.rgb;
+			*bytes++ = index_pos;
 			QIX_STATS( count_index );
-
-			px = index[index_pos % QIX_COLOR_CACHE_SIZE];
 			continue;
 		}
 
-		qix_rgb2yuv( &px );
-		index[index_pos % QIX_COLOR_CACHE_SIZE] = px;
+		index[index_pos] = px.rgb;
 
 		int vg = ( px.u - pxPrev.u );
 		int vb = ( px.v - pxPrev.v );
@@ -363,9 +361,9 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 				*bytes++ = px.y;
 				QIX_STATS( count_diff_16 );
 			}
-			else if ( index2[index_pos] == px.rgb )
+			else if ( index2[index_pos2] == px.rgb )
 			{
-				unsigned int value = ( QIX_INDEX_16 << 8 ) | ( index_pos );
+				unsigned int value = ( QIX_INDEX_16 << 8 ) | ( index_pos2 );
 				*bytes++ = ( unsigned char )( value >> 8 );
 				*bytes++ = ( unsigned char )( value );
 				QIX_STATS( count_index2 );
@@ -406,9 +404,9 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 			}
 			else
 			{
-				if ( index2[index_pos] == px.rgb )
+				if ( index2[index_pos2] == px.rgb )
 				{
-					unsigned int value = ( QIX_INDEX_16 << 8 ) | ( index_pos );
+					unsigned int value = ( QIX_INDEX_16 << 8 ) | ( index_pos2 );
 					*bytes++ = ( unsigned char )( value >> 8 );
 					*bytes++ = ( unsigned char )( value );
 					QIX_STATS( count_index2 );
@@ -423,6 +421,8 @@ size_t qix_encode_rgb( const unsigned int *src, size_t numSrcPixels, unsigned ch
 				}
 			}
 		}
+
+		index2[index_pos2] = px.rgb;
 	}
 
 	return bytes - dst;
