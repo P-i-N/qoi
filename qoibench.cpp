@@ -383,6 +383,7 @@ struct benchmark_conf
 		AVG_TIME = time / RUNS; \
 	} while (0)
 
+//---------------------------------------------------------------------------------------------------------------------
 benchmark_result_t benchmark_image( const char *path, int runs, benchmark_conf conf = { } )
 {
 	int encoded_png_size;
@@ -551,6 +552,7 @@ benchmark_result_t benchmark_image( const char *path, int runs, benchmark_conf c
 	return res;
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void benchmark_print_header( const char *head )
 {
 	char buff[256] = { };
@@ -562,10 +564,16 @@ void benchmark_print_header( const char *head )
 	printf( "%s", buff );
 	for ( int i = 0, S = 39 - ( int )strlen( buff ); i < S; ++i ) printf( " " );
 
+#ifdef QIX_NO_STATS
+	printf(
+	    "|    decode ms  |    %%  |    encode ms  |    %%  |   qoi/qix kB  |    %%\n" );
+#else
 	printf(
 	    "|   index  index2  diff_8 diff_16   run_8 diff_24   color |  qoi/qix kB |  %%\n" );
+#endif
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void benchmark_print_separator()
 {
 	printf(
@@ -583,6 +591,21 @@ void benchmark_print_simple_result( const char *head, benchmark_result_t res )
 	printf( "%s", buff );
 	for ( int i = 0, S = 39 - ( int )strlen( buff ); i < S; ++i ) printf( " " );
 
+#ifdef QIX_NO_STATS
+	printf(
+	    "| %5.1f /%5.1f  | %3d%%  | %5.1f /%5.1f  | %3d%%  | %5d /%5d  | %3d%%\n",
+	    ( double )res.qoi.decode_time / 1000000.0,
+	    ( double )res.qix.decode_time / 1000000.0,
+	    ( int )( res.qix.decode_time ? ( ( ( res.qoi.decode_time * 100 ) / res.qix.decode_time ) - 100 ) : 0 ),
+	    ( double )res.qoi.encode_time / 1000000.0,
+	    ( double )res.qix.encode_time / 1000000.0,
+	    ( int )( res.qix.encode_time ? ( ( ( res.qoi.encode_time * 100 ) / res.qix.encode_time ) - 100 ) : 0 ),
+	    ( int )res.qoi.size / 1024,
+	    ( int )res.qix.size / 1024,
+	    ( int )( ( res.qoi.size * 100 ) / ( res.qix.size ) - 100 )
+	);
+
+#else
 	printf(
 	    "|%8d%8d%8d%8d%8d%8d%8d |%5d /%5d |%3d%%\n",
 	    ( int )res.stats.count_index,
@@ -596,8 +619,10 @@ void benchmark_print_simple_result( const char *head, benchmark_result_t res )
 	    ( int )res.qix.size / 1024,
 	    ( int )( ( res.qoi.size * 100 ) / ( res.qix.size ) - 100 )
 	);
+#endif
 }
 
+//---------------------------------------------------------------------------------------------------------------------
 void benchmark_print_result( const char *head, benchmark_result_t res, int runs )
 {
 	double px = ( double )res.px;
@@ -652,6 +677,68 @@ void benchmark_print_result( const char *head, benchmark_result_t res, int runs 
 	printf( "\n" );
 }
 
+struct dir_suite
+{
+	std::string name;
+	std::vector<std::string> files;
+	std::vector<benchmark_result_t> results;
+	benchmark_result_t totals = { 0 };
+
+	void get_files( const std::filesystem::path &p )
+	{
+		name = p.filename().string();
+
+		for ( const auto &dir_entry : std::filesystem::directory_iterator{ p } )
+		{
+			if ( dir_entry.is_directory() || dir_entry.path().extension() != ".png" )
+				continue;
+
+			files.push_back( dir_entry.path().string() );
+		}
+	}
+
+	void save_to_csv( std::string fileName )
+	{
+		FILE *fw = fopen( fileName.c_str(), "w" );
+		if ( !fw )
+			return;
+
+		fprintf( fw, "Name;" );
+		fprintf( fw, "libpng decode ms;libpng encode ms;libpng decode mpps;libpng encode mpps;libpng size kb;" );
+		fprintf( fw, "stbi decode ms;stbi encode ms;stbi decode mpps;stbi encode mpps;stbi size kb;" );
+		fprintf( fw, "qoi decode ms;qoi encode ms;qoi decode mpps;qoi encode mpps;qoi size kb;" );
+		fprintf( fw, "qix decode ms;qix encode ms;qix decode mpps;qix encode mpps;qix size kb\n" );
+
+		auto writeLibResults = []( FILE * fw, uint64_t pixels, const benchmark_lib_result_t &libRes, const char *eol )
+		{
+			fprintf( fw, "%.1lf;%.1lf;%.1lf;%.1lf;%d%s",
+			         ( double )libRes.decode_time / 1000000.0,
+			         ( double )libRes.encode_time / 1000000.0,
+			         ( libRes.decode_time > 0 ? pixels / ( ( double )libRes.decode_time / 1000.0 ) : 0 ),
+			         ( libRes.encode_time > 0 ? pixels / ( ( double )libRes.encode_time / 1000.0 ) : 0 ),
+			         ( int )libRes.size / 1024,
+			         eol
+			       );
+		};
+
+		for ( size_t i = 0, S = results.size(); i < S; ++i )
+		{
+			const auto &name = std::filesystem::path( files[i] ).filename().string();
+			const auto &res = results[i];
+
+			fprintf( fw, "%s (%dx%d);", name.c_str(), res.w, res.h );
+
+			writeLibResults( fw, res.px, res.libpng, ";" );
+			writeLibResults( fw, res.px, res.stbi, ";" );
+			writeLibResults( fw, res.px, res.qoi, ";" );
+			writeLibResults( fw, res.px, res.qix, "\n" );
+		}
+
+		fclose( fw );
+	}
+};
+
+//---------------------------------------------------------------------------------------------------------------------
 int main( int argc, char **argv )
 {
 	if ( argc < 3 )
@@ -671,28 +758,6 @@ int main( int argc, char **argv )
 	{
 		QOI_ERROR( "Couldn't open directory %s", argv[2] );
 	}
-
-	struct dir_suite
-	{
-		std::string name;
-		std::vector<std::string> files;
-		benchmark_result_t totals = { 0 };
-
-		void get_files( const fs::path &p )
-		{
-			name = p.filename().string();
-
-			for ( const auto &dir_entry : fs::directory_iterator{ p } )
-			{
-				if ( dir_entry.is_directory() || dir_entry.path().extension() != ".png" )
-				{
-					continue;
-				}
-
-				files.push_back( dir_entry.path().string() );
-			}
-		}
-	};
 
 	std::vector<dir_suite> dir_suites;
 	dir_suites.emplace_back();
@@ -723,7 +788,7 @@ int main( int argc, char **argv )
 	if ( runs < 0 )
 	{
 		conf.encode = true;
-		conf.decode = false;
+		conf.decode = true;
 		conf.eraseAlpha = true;
 		conf.alphaToBW = false;
 		conf.saveQOI = true;
@@ -744,6 +809,7 @@ int main( int argc, char **argv )
 		for ( const auto &file_path : suite.files )
 		{
 			benchmark_result_t res = benchmark_image( file_path.c_str(), runs, conf );
+			suite.results.push_back( res );
 
 			if ( runs > 0 )
 				benchmark_print_result( file_path.c_str(), res, runs );
@@ -820,6 +886,8 @@ int main( int argc, char **argv )
 	{
 		if ( runs <= 0 )
 			benchmark_print_result( "Total AVG", dir_suites[0].totals, 1 );
+
+		dir_suites[0].save_to_csv( "benchmark.csv" );
 	}
 
 	return 0;
