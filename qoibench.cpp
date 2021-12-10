@@ -33,6 +33,7 @@ SOFTWARE.
 
 #include <stdio.h>
 #include <png.h>
+#include <zstd.h>
 
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ONLY_PNG
@@ -359,6 +360,7 @@ typedef struct
 	benchmark_lib_result_t stbi;
 	benchmark_lib_result_t qoi;
 	benchmark_lib_result_t qix;
+	benchmark_lib_result_t qix_zstd;
 } benchmark_result_t;
 
 struct benchmark_conf
@@ -543,6 +545,26 @@ benchmark_result_t benchmark_image( const char *path, int runs, benchmark_conf c
 			res.qix.size = enc_size;
 			free( enc_p );
 		} );
+
+		BENCHMARK_FN( abs( runs ), res.qix_zstd.encode_time,
+		{
+			int enc_size;
+			auto desc = qix_desc{
+				.width = ( unsigned int )w,
+				.height = ( unsigned int )h,
+				.channels = 4,
+				.colorspace = QIX_SRGB,
+				.mode = 0
+			};
+			void *enc_p = qix_encode( pixels, &desc, &enc_size, NULL );
+
+			auto zstdBufferSize = 1024 + enc_size * 2;
+			void *zstdBuffer = malloc( zstdBufferSize );
+
+			res.qix_zstd.size = ZSTD_compress( zstdBuffer, zstdBufferSize, enc_p, enc_size, ZSTD_CLEVEL_DEFAULT );
+			free( enc_p );
+			free( zstdBuffer );
+		} );
 	}
 
 	free( pixels );
@@ -707,7 +729,8 @@ struct dir_suite
 		fprintf( fw, "libpng decode ms;libpng encode ms;libpng decode mpps;libpng encode mpps;libpng size kB;" );
 		fprintf( fw, "stbi decode ms;stbi encode ms;stbi decode mpps;stbi encode mpps;stbi size kB;" );
 		fprintf( fw, "qoi decode ms;qoi encode ms;qoi decode mpps;qoi encode mpps;qoi size kB;" );
-		fprintf( fw, "qix decode ms;qix encode ms;qix decode mpps;qix encode mpps;qix size kB\n" );
+		fprintf( fw, "qix decode ms;qix encode ms;qix decode mpps;qix encode mpps;qix size kB;" );
+		fprintf( fw, "qix+zstd decode ms;qix+zstd encode ms;qix+zstd decode mpps;qix+zstd encode mpps;qix+zstd size kB\n" );
 
 		auto writeLibResults = []( FILE * fw, uint64_t pixels, const benchmark_lib_result_t &libRes, const char *eol )
 		{
@@ -731,7 +754,8 @@ struct dir_suite
 			writeLibResults( fw, res.px, res.libpng, ";" );
 			writeLibResults( fw, res.px, res.stbi, ";" );
 			writeLibResults( fw, res.px, res.qoi, ";" );
-			writeLibResults( fw, res.px, res.qix, "\n" );
+			writeLibResults( fw, res.px, res.qix, ";" );
+			writeLibResults( fw, res.px, res.qix_zstd, "\n" );
 		}
 
 		fclose( fw );
@@ -747,9 +771,6 @@ int main( int argc, char **argv )
 		printf( "Example: qoibench 10 images/textures/\n" );
 		exit( 1 );
 	}
-
-	float total_percentage = 0;
-	int total_size = 0;
 
 	int runs = atoi( argv[1] );
 	namespace fs = std::filesystem;
