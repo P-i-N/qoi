@@ -704,10 +704,10 @@ struct dir_suite
 			return;
 
 		fprintf( fw, "Name;" );
-		fprintf( fw, "libpng decode ms;libpng encode ms;libpng decode mpps;libpng encode mpps;libpng size kb;" );
-		fprintf( fw, "stbi decode ms;stbi encode ms;stbi decode mpps;stbi encode mpps;stbi size kb;" );
-		fprintf( fw, "qoi decode ms;qoi encode ms;qoi decode mpps;qoi encode mpps;qoi size kb;" );
-		fprintf( fw, "qix decode ms;qix encode ms;qix decode mpps;qix encode mpps;qix size kb\n" );
+		fprintf( fw, "libpng decode ms;libpng encode ms;libpng decode mpps;libpng encode mpps;libpng size kB;" );
+		fprintf( fw, "stbi decode ms;stbi encode ms;stbi decode mpps;stbi encode mpps;stbi size kB;" );
+		fprintf( fw, "qoi decode ms;qoi encode ms;qoi decode mpps;qoi encode mpps;qoi size kB;" );
+		fprintf( fw, "qix decode ms;qix encode ms;qix decode mpps;qix encode mpps;qix size kB\n" );
 
 		auto writeLibResults = []( FILE * fw, uint64_t pixels, const benchmark_lib_result_t &libRes, const char *eol )
 		{
